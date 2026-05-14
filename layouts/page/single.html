@@ -1,0 +1,25 @@
+{{ define "main" }}
+{{- /*
+    layouts/page/single.html — standalone pages (About, etc.)
+    Mirrors Ghost's page.hbs.
+    Set show_title: false in front matter to hide the title/feature image header.
+*/ -}}
+
+<article class="gh-article" data-pagefind-body>
+
+    {{- if ne .Params.show_title false }}
+    <header class="gh-header gh-canvas">
+        <h1 class="gh-title" data-pagefind-meta="title">{{ .Title }}</h1>
+
+        {{- with .Description }}
+        <p class="gh-excerpt">{{ . }}</p>
+        {{- end }}
+    </header>
+    {{- end }}
+
+    <div class="gh-content gh-canvas">
+        {{ .Content }}
+    </div>
+
+</article>
+{{ end }}

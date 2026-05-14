@@ -1,0 +1,36 @@
+{{- /*
+    partials/pagination.html — Newer/Older post navigation.
+    Expects .Paginator to be available on the calling page.
+*/ -}}
+
+{{- with .Paginator }}
+<nav class="gh-pagination" role="navigation" aria-label="Page navigation">
+
+    {{- /* Newer posts (← previous page) */}}
+    {{ if .HasPrev }}
+    <a class="gh-pagination-link gh-pagination-newer" href="{{ .Prev.URL }}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        Newer Posts
+    </a>
+    {{ else }}
+    <span class="gh-pagination-link gh-pagination-newer gh-pagination-disabled" aria-hidden="true"></span>
+    {{ end }}
+
+    <span class="gh-pagination-info">Page {{ .PageNumber }} of {{ .TotalPages }}</span>
+
+    {{- /* Older posts (next page →) */}}
+    {{ if .HasNext }}
+    <a class="gh-pagination-link gh-pagination-older" href="{{ .Next.URL }}">
+        Older Posts
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </a>
+    {{ else }}
+    <span class="gh-pagination-link gh-pagination-older gh-pagination-disabled" aria-hidden="true"></span>
+    {{ end }}
+
+</nav>
+{{- end }}

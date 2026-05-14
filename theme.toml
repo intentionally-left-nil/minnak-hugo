@@ -1,0 +1,12 @@
+name        = "MiNNaK"
+license     = "GPL-2.0-or-later"
+licenselink = "https://www.gnu.org/licenses/gpl-2.0.html"
+description = "A minimal dark-theme blog and portfolio, ported from the MiNNaK WordPress/Ghost theme, styled after terminal.space."
+homepage    = "https://github.com/intentionally-left-nil/minnak-hugo"
+tags        = ["blog", "dark", "minimal", "responsive"]
+features    = ["menu", "tags", "categories", "pagination"]
+min_version = "0.120.0"
+
+[author]
+  name = "intentionally-left-nil"
+  homepage = "https://github.com/intentionally-left-nil"

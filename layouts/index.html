@@ -1,0 +1,10 @@
+{{ define "main" }}
+{{- $posts := where .Site.RegularPages "Type" "posts" -}}
+{{- $pager := .Paginate $posts -}}
+<div class="gh-page">
+    <div class="gh-container">
+        {{ partial "post-grid.html" (dict "Pages" $pager.Pages) }}
+        {{ partial "pagination.html" . }}
+    </div>
+</div>
+{{ end }}

@@ -1,0 +1,47 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>
+    {{- if .IsHome -}}
+        {{ .Site.Title }}
+    {{- else -}}
+        {{ .Title }} &mdash; {{ .Site.Title }}
+    {{- end -}}
+</title>
+
+{{- /* Description */}}
+{{- with .Description }}
+<meta name="description" content="{{ . }}" />
+{{- else }}
+{{- with .Site.Params.description }}
+<meta name="description" content="{{ . }}" />
+{{- end }}
+{{- end }}
+
+{{- /* Canonical */}}
+<link rel="canonical" href="{{ .Permalink }}" />
+
+{{- /* RSS */}}
+{{ range .AlternativeOutputFormats -}}
+<link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink }}" title="{{ $.Site.Title }}" />
+{{ end -}}
+
+{{- /* Stylesheet — fingerprinted for cache busting */}}
+{{- $css := resources.Get "css/index.bundle.css" | resources.Minify | resources.Fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" />
+
+{{- /* Pagefind UI — only if search is enabled (default: true) */}}
+{{- if ne (.Site.Params.search | default true) false }}
+<link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+<script src="/pagefind/pagefind-ui.js"></script>
+<script>
+    window.addEventListener('DOMContentLoaded', function () {
+        new PagefindUI({
+            element: "#search",
+            showImages: false,
+            showSubResults: false,
+            resetStyles: false
+        });
+    });
+</script>
+{{- end }}

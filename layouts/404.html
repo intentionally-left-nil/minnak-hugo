@@ -1,0 +1,11 @@
+{{ define "main" }}
+<div class="gh-error">
+    <section class="gh-error-content">
+        <h1 class="gh-error-code">404</h1>
+        <p class="gh-error-description">Page not found</p>
+        <a class="gh-error-link" href="{{ .Site.BaseURL | relLangURL }}">
+            &#x2190; Go back home
+        </a>
+    </section>
+</div>
+{{ end }}

@@ -1,0 +1,68 @@
+{{ define "main" }}
+
+<div class="content-wrapper">
+    <div class="article-wrapper">
+        <article class="gh-article" data-pagefind-body>
+
+            <div class="article-content">
+                <header class="entry-header">
+                    <h1 class="entry-title" data-pagefind-meta="title">{{ .Title }}</h1>
+                    <div class="entry-meta">
+                        <span class="posted-on">
+                            <time datetime="{{ .Date.Format "2006-01-02" }}" data-pagefind-meta="date[datetime]">
+                                {{- .Date.Format "January 2, 2006" -}}
+                            </time>
+                        </span>
+                        {{- with index .Params.categories 0 -}}
+                        {{- $catSlug := . | urlize -}}
+                        <span class="cat-links" data-pagefind-filter="category">
+                            <a href="/categories/{{ $catSlug }}/">{{ . }}</a>
+                        </span>
+                        {{- end -}}
+                    </div>
+                </header>
+
+                <div class="entry-content">
+                    {{ .Content }}
+                </div>
+
+                <footer class="entry-footer">
+                    {{- $tags := .Params.tags -}}
+                    {{- with $tags }}
+                    <div class="tags-links">
+                        {{- range $tags -}}
+                        <a href="/tags/{{ . | urlize }}/">{{ . }}</a>
+                        {{- end -}}
+                    </div>
+                    {{- end }}
+                </footer>
+
+            </div>
+
+        </article>
+    </div>
+</div>
+
+{{- /* Prev/Next navigation within section */}}
+<aside class="gh-readmore">
+    <div class="gh-readmore-inner gh-container">
+        <div class="gh-readmore-next">
+            {{- with .PrevInSection }}
+            <a href="{{ .RelPermalink }}">
+                <span class="nav-subtitle">&#x2190; Previous</span>
+                <span class="nav-title">{{ .Title }}</span>
+            </a>
+            {{- end }}
+        </div>
+        <div class="gh-readmore-prev">
+            {{- with .NextInSection }}
+            <a href="{{ .RelPermalink }}">
+                <span class="nav-subtitle">Next &#x2192;</span>
+                <span class="nav-title">{{ .Title }}</span>
+            </a>
+            {{- end }}
+        </div>
+    </div>
+</aside>
+
+{{ end }}

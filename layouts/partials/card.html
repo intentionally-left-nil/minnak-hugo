@@ -1,0 +1,71 @@
+{{- /*
+    partials/card.html — Post summary card
+    Used on list pages (home, term/category, section).
+
+    Expects: a Page object (either . or a page passed as context).
+    Feature image: looks for a page-bundle resource named "feature.*"
+    first, then falls back to .Params.feature_image (plain URL string).
+
+    Image pipeline: WebP + JPEG <picture> at six sizes matching the
+    Ghost theme's image_sizes config (30, 100, 300, 600, 1200, 2000px).
+    AVIF deferred to M12.
+*/ -}}
+
+{{- $page := . -}}
+{{- $img := "" -}}
+
+{{- /* 1. Try page-bundle resource (preferred — enables processing) */}}
+{{- with $page.Resources.GetMatch "feature.*" -}}
+    {{- $img = . -}}
+{{- end -}}
+
+<article class="gh-card">
+
+    {{- /* Feature image */}}
+    {{- with $img -}}
+    <a class="gh-card-image-link" href="{{ $page.RelPermalink }}">
+        <picture class="gh-card-picture">
+            {{- $widths := slice 30 100 300 600 1200 2000 -}}
+            {{- /* WebP source */}}
+            <source
+                srcset="{{ range $i, $w := $widths }}{{ if $i }}, {{ end }}{{ ($img.Resize (printf "%dx webp" $w)).RelPermalink }} {{ $w }}w{{ end }}"
+                sizes="(min-width: 800px) 400px, 100vw"
+                type="image/webp"
+            />
+            {{- /* JPEG fallback source */}}
+            <source
+                srcset="{{ range $i, $w := $widths }}{{ if $i }}, {{ end }}{{ ($img.Resize (printf "%dx" $w)).RelPermalink }} {{ $w }}w{{ end }}"
+                sizes="(min-width: 800px) 400px, 100vw"
+            />
+            <img
+                src="{{ ($img.Resize "600x").RelPermalink }}"
+                alt="{{ with $page.Params.feature_image_alt }}{{ . }}{{ else }}{{ $page.Title }}{{ end }}"
+                class="gh-card-image"
+                loading="lazy"
+                width="{{ ($img.Resize "600x").Width }}"
+                height="{{ ($img.Resize "600x").Height }}"
+            />
+        </picture>
+    </a>
+    {{- end -}}
+
+    <div class="gh-card-content">
+        <h2 class="gh-card-title">
+            <a href="{{ $page.RelPermalink }}">{{ $page.Title }}</a>
+        </h2>
+
+        <span class="gh-card-meta">
+            <time datetime="{{ $page.Date.Format "2006-01-02" }}">
+                {{- $page.Date.Format "January 2, 2006" -}}
+            </time>
+            {{- with index $page.Params.categories 0 -}}
+            {{- $catSlug := . | urlize -}}
+            <a class="gh-card-tag" href="/categories/{{ $catSlug }}/">{{ . }}</a>
+            {{- end -}}
+        </span>
+
+        <p>{{ $page.Summary }}</p>
+
+        <a class="read-more-link" href="{{ $page.RelPermalink }}">Read more &#x27F6;</a>
+    </div>
+</article>

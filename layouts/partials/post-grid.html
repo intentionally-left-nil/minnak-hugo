@@ -1,0 +1,53 @@
+{{- /*
+    partials/post-grid.html — responsive 3/2/1-col masonry post grid.
+
+    Call with: {{ partial "post-grid.html" (dict "Pages" $pages) }}
+
+    Column distribution uses modular arithmetic (col = index % cols)
+    instead of the Ghost theme's hard-coded index matches.
+    This handles any number of posts cleanly without hard limits.
+
+    Responsive visibility:
+      ≥992px  → .gh-postfeed-3col  (3 columns)
+      600–991px → .gh-postfeed-2col  (2 columns)
+      <600px  → .gh-postfeed-1col  (1 column)
+    Only the appropriate layout is shown per breakpoint via CSS.
+*/ -}}
+
+{{- $pages := .Pages -}}
+
+{{- /* Helper: collect pages for a specific column (0-indexed) */}}
+{{- /* 3-column layout: col 0→0,3,6,9,12  col 1→1,4,7,10,13  col 2→2,5,8,11,14 */}}
+
+{{- /* ── 3-col (desktop ≥992px) ── */}}
+<div class="gh-postfeed gh-postfeed-3col">
+    {{- range $col := slice 0 1 2 }}
+    <div class="gh-column">
+        {{- range $i, $p := $pages }}
+        {{- if eq (mod $i 3) $col }}
+        {{ partial "card.html" $p }}
+        {{- end }}
+        {{- end }}
+    </div>
+    {{- end }}
+</div>
+
+{{- /* ── 2-col (tablet 600–991px) ── */}}
+<div class="gh-postfeed gh-postfeed-2col">
+    {{- range $col := slice 0 1 }}
+    <div class="gh-column">
+        {{- range $i, $p := $pages }}
+        {{- if eq (mod $i 2) $col }}
+        {{ partial "card.html" $p }}
+        {{- end }}
+        {{- end }}
+    </div>
+    {{- end }}
+</div>
+
+{{- /* ── 1-col (mobile <600px) ── */}}
+<div class="gh-postfeed gh-postfeed-1col">
+    {{- range $pages }}
+    {{ partial "card.html" . }}
+    {{- end }}
+</div>

@@ -1,0 +1,8 @@
+{{ define "main" }}
+<div class="gh-page">
+    <div class="gh-container">
+        {{ partial "post-grid.html" (dict "Pages" .Paginator.Pages) }}
+        {{ partial "pagination.html" . }}
+    </div>
+</div>
+{{ end }}

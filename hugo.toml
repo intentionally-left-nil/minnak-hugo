@@ -1,0 +1,8 @@
+# MiNNaK Hugo Theme — module root config
+# This file declares the module and its Hugo version requirements.
+# See exampleSite/ for a working example site configuration.
+
+[module]
+  [module.hugoVersion]
+    extended = true
+    min      = "0.120.0"

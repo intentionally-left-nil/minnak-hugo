@@ -1,0 +1,44 @@
+baseURL  = "http://localhost:1313/"
+title    = "terminal.space"
+language = "en"
+
+# Paginate: 15 posts per page (matches Ghost theme default)
+paginate = 15
+
+# Taxonomies
+[taxonomies]
+  category = "categories"
+  tag      = "tags"
+
+# Theme module — local replace directive in go.mod points to ../
+[module]
+  [[module.imports]]
+    path = "github.com/intentionally-left-nil/minnak-hugo"
+
+# Site params
+[params]
+  description = "A minimal dark blog styled after terminal.space"
+  search      = true
+
+# Main navigation menu — drives the Categories tab in the sidebar
+[menu]
+  [[menu.main]]
+    name   = "Technology"
+    url    = "/categories/technology/"
+    weight = 1
+  [[menu.main]]
+    name   = "AI"
+    url    = "/categories/ai/"
+    weight = 2
+  [[menu.main]]
+    name   = "Cantonese"
+    url    = "/categories/cantonese/"
+    weight = 3
+  [[menu.main]]
+    name   = "Photography"
+    url    = "/categories/photography/"
+    weight = 4
+  [[menu.main]]
+    name   = "PNW"
+    url    = "/categories/pnw/"
+    weight = 5

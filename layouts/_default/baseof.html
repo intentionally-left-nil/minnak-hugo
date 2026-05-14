@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang | default "en" }}">
+<head>
+{{ partial "head.html" . }}
+</head>
+<body class="dark-theme">
+
+<div id="page" class="site">
+
+    {{- /* Site title block — fixed top-left, sits above sidebar content area */}}
+    <header id="masthead" class="site-header">
+        <div class="site-branding">
+            <p class="site-title">
+                <a href="{{ .Site.BaseURL | relLangURL }}" rel="home">{{ .Site.Title }}</a>
+            </p>
+        </div>
+    </header>
+
+    {{- /* Mobile toggle button (3-dot menu) */}}
+    <button id="toggle-button" class="toggle-button" aria-label="Open menu">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 10C12 11.1046 11.1046 12 10 12C8.89539 12 8 11.1046 8 10C8 8.89539 8.89539 8 10 8C11.1046 8 12 8.89539 12 10Z" fill="currentColor"/>
+            <path d="M12 4C12 5.10461 11.1046 6 10 6C8.89539 6 8 5.10461 8 4C8 2.89539 8.89539 2 10 2C11.1046 2 12 2.89539 12 4Z" fill="currentColor"/>
+            <path d="M12 16C12 17.1046 11.1046 18 10 18C8.89539 18 8 17.1046 8 16C8 14.8954 8.89539 14 10 14C11.1046 14 12 14.8954 12 16Z" fill="currentColor"/>
+        </svg>
+    </button>
+
+    {{- /* Left sidebar: icon tabs + category panel */}}
+    {{ partial "sidebar.html" . }}
+
+    {{- /* Main content area */}}
+    <main class="gh-main">
+        {{ block "main" . }}{{ end }}
+
+        <footer id="colophon" class="site-footer">
+            <div id="site-info" class="site-info">
+                <a href="{{ .Site.BaseURL | relLangURL }}">{{ .Site.Title }}</a>
+                &copy; {{ now.Format "2006" }}
+            </div>
+        </footer>
+    </main>
+
+</div>
+
+{{ partial "foot.html" . }}
+
+</body>
+</html>

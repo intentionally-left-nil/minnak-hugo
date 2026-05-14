@@ -30,3 +30,22 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# Hugo build output
+exampleSite/public/
+exampleSite/resources/
+resources/
+
+# Hugo module cache (local)
+exampleSite/.hugo_cache/
+
+# Node
+node_modules/
+tests/e2e/node_modules/
+
+# Playwright artifacts
+tests/e2e/playwright-report/
+tests/e2e/test-results/
+
+# macOS
+.DS_Store
