@@ -2,14 +2,16 @@ import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 
 // When MINNAK_RUN_PAGEFIND=1 we serve the pre-built public/ dir (which
-// contains the pagefind index) via "hugo server --renderStaticToDisk".
+// contains the pagefind index) via Python's built-in http.server.
 // Otherwise we use the normal in-memory hugo server (no pagefind index,
-// search E2E tests are skipped).
-const runPagefind = process.env.MINNAK_RUN_PAGEFIND === '1';
+// search E2E tests are automatically skipped).
+export const runPagefind = process.env.MINNAK_RUN_PAGEFIND === '1';
 
-// Resolve the exampleSite directory relative to this config file.
-const repoRoot = path.resolve(__dirname, '..', '..');
-const exampleSiteDir = path.join(repoRoot, 'exampleSite');
+const repoRoot   = path.resolve(__dirname, '..', '..');
+const exampleDir = path.join(repoRoot, 'exampleSite');
+const publicDir  = path.join(exampleDir, 'public');
+
+const PORT = 1314;
 
 export default defineConfig({
   testDir: './specs',
@@ -21,7 +23,7 @@ export default defineConfig({
     : [['html', { outputFolder: 'playwright-report', open: 'never' }]],
 
   use: {
-    baseURL: 'http://localhost:1314',
+    baseURL: `http://localhost:${PORT}`,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
@@ -33,12 +35,23 @@ export default defineConfig({
     },
   ],
 
-  webServer: {
-    // hugo server renders from memory; Pagefind search will not be available.
-    command: `hugo server --source "${exampleSiteDir}" --port 1314 --disableFastRender --disableLiveReload`,
-    port: 1314,
-    reuseExistingServer: !process.env.CI,
-    stdout: 'ignore',
-    stderr: 'pipe',
-  },
+  webServer: runPagefind
+    ? {
+        // Serve the pre-built public/ dir including the pagefind index.
+        // Python's http.server correctly serves Hugo's pretty URL output
+        // (directory requests are served as index.html).
+        command: `python3 -m http.server ${PORT} --bind 127.0.0.1 --directory "${publicDir}"`,
+        port: PORT,
+        reuseExistingServer: false,
+        stdout: 'ignore',
+        stderr: 'pipe',
+      }
+    : {
+        // Fast dev server for non-search tests; pagefind index not available.
+        command: `hugo server --source "${exampleDir}" --port ${PORT} --disableFastRender --disableLiveReload`,
+        port: PORT,
+        reuseExistingServer: !process.env.CI,
+        stdout: 'ignore',
+        stderr: 'pipe',
+      },
 });

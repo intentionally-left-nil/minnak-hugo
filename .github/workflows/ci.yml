@@ -73,6 +73,10 @@ jobs:
       - name: Build example site
         run: hugo --source exampleSite --minify --logLevel warn
 
+      # Build Pagefind search index against the built site
+      - name: Build Pagefind index
+        run: npx --yes pagefind@latest --site exampleSite/public
+
       # Lint: fail on path warnings
       - name: Hugo lint (path warnings)
         run: hugo --source exampleSite --renderToMemory --printPathWarnings --logLevel warn
@@ -84,10 +88,15 @@ jobs:
         env:
           MINNAK_SKIP_BUILD: "1"   # reuse the public/ built above
 
-      # ── E2E tests (Playwright) ─────────────────────────────────────────────
-      - name: Run Playwright E2E tests
+      # ── E2E tests (Playwright + Pagefind search) ───────────────────────────
+      # MINNAK_RUN_PAGEFIND=1 switches the webServer to Python's http.server
+      # serving the pre-built public/ dir (which includes the pagefind index),
+      # enabling the search.spec.ts tests to run.
+      - name: Run Playwright E2E tests (including search)
         run: npx playwright test --reporter=github
         working-directory: tests/e2e
+        env:
+          MINNAK_RUN_PAGEFIND: "1"
 
       # ── Upload artifacts on failure ────────────────────────────────────────
       - name: Upload Playwright report

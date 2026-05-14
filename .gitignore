@@ -36,6 +36,10 @@ exampleSite/public/
 exampleSite/resources/
 resources/
 
+# Hugo build state files
+exampleSite/.hugo_build.lock
+.hugo_build.lock
+
 # Hugo module cache (local)
 exampleSite/.hugo_cache/
 

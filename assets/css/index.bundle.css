@@ -1126,6 +1126,8 @@ body.open-sidebar .gh-main::after {
     text-align: center;
 }
 
+.gh-page-head h1 { color: var(--text-primary); }
+
 .gh-page-image { margin: 4vmin 0 0 0; }
 
 .gh-page-head > p {
@@ -1190,6 +1192,71 @@ body.open-sidebar .gh-main::after {
     margin-bottom: 2.5rem;
 }
 
+/* Headings inside post body should be primary text colour */
+.entry-content h1,
+.entry-content h2,
+.entry-content h3,
+.entry-content h4,
+.entry-content h5,
+.entry-content h6 {
+    color: var(--text-primary);
+    margin-top: 2.5rem;
+    margin-bottom: 0.8rem;
+}
+
+/* Code blocks inside post body */
+.entry-content pre,
+.entry-content .highlight,
+.entry-content .highlight pre {
+    overflow-x: auto;
+    border-radius: 5px;
+    margin: 2rem 0;
+}
+
+/* Inline code inside post body */
+.entry-content :not(pre) code {
+    vertical-align: middle;
+    padding: 0.15em 0.4em;
+    border: #444 1px solid;
+    font-size: 0.88em;
+    line-height: 1em;
+    color: #e06c75;
+    background: #2c2f33;
+    border-radius: 0.25em;
+    font-weight: 400;
+}
+
+/* Block-level elements inside post body */
+.entry-content p { margin-bottom: 1.8rem; }
+
+.entry-content ul,
+.entry-content ol { padding-left: 1.9em; margin-bottom: 1.8rem; }
+
+.entry-content li + li { margin-top: 0.4em; }
+
+.entry-content blockquote {
+    position: relative;
+    font-style: italic;
+    margin: 2rem 0 2rem 1.5em;
+    color: var(--text-muted);
+}
+
+.entry-content blockquote::before {
+    content: "";
+    position: absolute;
+    left: -1.5em;
+    top: 0;
+    bottom: 0;
+    width: 0.3rem;
+    background: var(--color-primary);
+}
+
+/* Links inside post body */
+.entry-content a {
+    color: var(--color-primary);
+    text-decoration-skip-ink: auto;
+}
+
 .entry-footer { margin-top: 2rem; }
 
 .tags-links { font-size: 0; }
@@ -1218,6 +1285,61 @@ body.open-sidebar .gh-main::after {
     border-radius: 100%;
     overflow: hidden;
     object-fit: cover;
+}
+
+/* =============================================================
+   Standalone page (page/single.html) — .gh-canvas layout
+   ============================================================= */
+
+.gh-header { padding: 6vmin 0 4vmin; }
+
+.gh-title {
+    color: var(--text-primary);
+    font-size: 4.6rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin: 0 0 1rem;
+}
+
+@media (max-width: 500px) { .gh-title { font-size: 2.7rem; } }
+
+.gh-excerpt {
+    color: var(--text-secondary);
+    font-size: 1.8rem;
+    line-height: 1.5;
+    margin: 0 0 2rem;
+    opacity: 0.8;
+}
+
+/* Content inside a standalone page uses .gh-canvas grid */
+.gh-content {
+    padding-bottom: 6vmin;
+    color: var(--text-secondary);
+    font-size: 1.8rem;
+    line-height: 1.6;
+}
+
+.gh-content h1,
+.gh-content h2,
+.gh-content h3,
+.gh-content h4,
+.gh-content h5,
+.gh-content h6 {
+    color: var(--text-primary);
+    margin-top: 2rem;
+    margin-bottom: 0.6rem;
+}
+
+.gh-content a { color: var(--color-primary); }
+
+.gh-content :not(pre) code {
+    vertical-align: middle;
+    padding: 0.15em 0.4em;
+    border: #444 1px solid;
+    font-size: 0.88em;
+    color: #e06c75;
+    background: #2c2f33;
+    border-radius: 0.25em;
 }
 
 /* =============================================================

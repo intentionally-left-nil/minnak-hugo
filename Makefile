@@ -5,10 +5,12 @@
 #   make pagefind     — build the example site + run pagefind indexer
 #   make test         — run Go markup tests (reuses existing public/ if present)
 #   make e2e          — run Playwright E2E tests (starts hugo server automatically)
-#   make ci           — full CI sequence: build + lint + test + e2e
+#   make e2e-search   — run Playwright + search tests (requires make pagefind first)
+#   make lint         — hugo path-warnings lint pass
+#   make ci           — full CI sequence: build + pagefind + lint + test + e2e-search
 #   make clean        — remove built output
 
-.PHONY: build pagefind test e2e lint ci clean
+.PHONY: build pagefind test test-fresh e2e e2e-search e2e-ui lint ci clean
 
 EXAMPLE_SITE := exampleSite
 PUBLIC_DIR   := $(EXAMPLE_SITE)/public
@@ -33,10 +35,13 @@ test-fresh:
 e2e:
 	cd tests/e2e && npx playwright test
 
+e2e-search:
+	cd tests/e2e && MINNAK_RUN_PAGEFIND=1 npx playwright test
+
 e2e-ui:
 	cd tests/e2e && npx playwright test --ui
 
-ci: build lint test e2e
+ci: build pagefind lint test e2e-search
 
 clean:
 	rm -rf $(PUBLIC_DIR)
