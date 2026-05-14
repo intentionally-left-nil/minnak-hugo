@@ -1,6 +1,8 @@
 # MiNNaK Hugo Theme — developer tasks
 #
 # Usage:
+#   make dev          — build + index search + serve full demo at http://localhost:1313/
+#   make watch        — live-reload dev server via hugo server (no search index)
 #   make build        — build the example site (hugo only)
 #   make pagefind     — build the example site + run pagefind indexer
 #   make test         — run Go markup tests (reuses existing public/ if present)
@@ -10,10 +12,23 @@
 #   make ci           — full CI sequence: build + pagefind + lint + test + e2e-search
 #   make clean        — remove built output
 
-.PHONY: build pagefind test test-fresh e2e e2e-search e2e-ui lint ci clean
+.PHONY: build pagefind dev watch test test-fresh e2e e2e-search e2e-ui lint ci clean
 
 EXAMPLE_SITE := exampleSite
 PUBLIC_DIR   := $(EXAMPLE_SITE)/public
+DEV_PORT     := 1313
+
+# Full demo: build, index search, then serve the static output.
+# Search works. Ctrl-C to stop.
+dev: pagefind
+	@printf '\n  Demo site → http://localhost:$(DEV_PORT)/\n  Ctrl-C to stop\n\n'
+	python3 -m http.server $(DEV_PORT) --bind 127.0.0.1 --directory $(PUBLIC_DIR)
+
+# Fast live-reload development server.
+# Search is gracefully absent (no pagefind index during hugo server).
+watch:
+	hugo server --source $(EXAMPLE_SITE) --port $(DEV_PORT) \
+	            --disableFastRender --navigateToChanged
 
 build:
 	hugo --source $(EXAMPLE_SITE) --logLevel warn

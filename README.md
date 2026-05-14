@@ -128,10 +128,16 @@ The theme ships subset LatoLatin font files (`static/fonts/`). They are served a
 ## Development (this repo)
 
 ```bash
-# Build the example site
+# Full demo: build + index search + serve at http://localhost:1313/
+make dev
+
+# Fast live-reload dev server via hugo server (search gracefully absent)
+make watch
+
+# Build the example site (hugo only)
 make build
 
-# Build + index search
+# Build + index search (outputs to exampleSite/public/pagefind/)
 make pagefind
 
 # Run Go markup tests (50 assertions)
