@@ -4,9 +4,12 @@ date: 2026-02-14T07:30:00Z
 categories: ["Photography"]
 tags: ["landscape", "film", "pnw"]
 summary: "Shooting the Carbon River section of Mount Rainier National Park at golden hour with a Pentax K1000 loaded with Kodak Portra 400."
+feature_image_alt: "Photo by Satwika Ananta on Unsplash"
 ---
 
 Shooting the Carbon River section of Mount Rainier National Park at golden hour with a Pentax K1000 loaded with Kodak Portra 400.
+
+![Carbon River golden hour — Photo by Satwika Ananta on Unsplash](feature.jpg)
 
 The Carbon River rainforest is the only inland temperate rainforest in the continental United States. It receives 70–80 inches of rain per year, and it shows: moss carpets everything, nurse logs sprout entire ecosystems, the canopy filters light into something almost green.
 
