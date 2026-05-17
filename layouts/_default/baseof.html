@@ -3,7 +3,7 @@
 <head>
 {{ partial "head.html" . }}
 </head>
-<body class="dark-theme">
+<body class="dark-theme" data-pf-theme="dark">
 
 <div id="page" class="site">
 
@@ -14,6 +14,11 @@
                 <a href="{{ .Site.BaseURL | relLangURL }}" rel="home">{{ .Site.Title }}</a>
             </p>
         </div>
+        {{- if ne .Site.Params.search false }}
+        <div class="site-search">
+            <pagefind-modal-trigger shortcut="mod+k"></pagefind-modal-trigger>
+        </div>
+        {{- end }}
     </header>
 
     {{- /* Mobile toggle button (3-dot menu) */}}
@@ -43,6 +48,10 @@
 </div>
 
 {{ partial "foot.html" . }}
+
+{{- if ne .Site.Params.search false }}
+<pagefind-modal reset-on-close></pagefind-modal>
+{{- end }}
 
 </body>
 </html>

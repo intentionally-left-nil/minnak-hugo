@@ -145,11 +145,18 @@ func TestSidebarRecentPostsOrder(t *testing.T) {
 // M2.4 — Pagefind mount point & data-pagefind-body on single pages
 // ----------------------------------------------------------------------------
 
-// TestSidebarSearchMountExists verifies the #search mount point is in the widget tab.
-func TestSidebarSearchMountExists(t *testing.T) {
+// TestSearchModalTriggerInHeader verifies the pagefind modal trigger is in the site header.
+func TestSearchModalTriggerInHeader(t *testing.T) {
 	buildOnce(t)
 	doc := helpers.ParseFile(t, "index.html")
-	helpers.AssertSelector(t, doc, "#widget-tab #search", 1)
+	helpers.AssertSelector(t, doc, "#masthead pagefind-modal-trigger", 1)
+}
+
+// TestSearchModalInDocument verifies the pagefind modal element is present in the page.
+func TestSearchModalInDocument(t *testing.T) {
+	buildOnce(t)
+	doc := helpers.ParseFile(t, "index.html")
+	helpers.AssertSelector(t, doc, "pagefind-modal", 1)
 }
 
 // TestSinglePostPagefindBody verifies data-pagefind-body is on the article.
