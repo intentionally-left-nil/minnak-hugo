@@ -1,8 +1,8 @@
 ---
 title: "Learning Jyutping as an Adult Heritage Speaker"
 date: 2026-01-10T11:00:00Z
-categories: ["Cantonese"]
-tags: ["language-learning", "jyutping", "heritage"]
+category: ["Cantonese"]
+tag: ["language-learning", "jyutping", "heritage"]
 summary: "Growing up speaking Cantonese at home but never learning to read or write it creates a strange linguistic gap. Here's how I've been closing it."
 ---
 

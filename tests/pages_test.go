@@ -117,23 +117,23 @@ func TestAboutPageContent(t *testing.T) {
 // M9 — Category term page
 // ----------------------------------------------------------------------------
 
-// TestCategoryTechPageExists verifies /categories/technology/ is built.
+// TestCategoryTechPageExists verifies /category/technology/ is built.
 func TestCategoryTechPageExists(t *testing.T) {
 	buildOnce(t)
-	helpers.FileExists(t, "categories/technology/index.html")
+	helpers.FileExists(t, "category/technology/index.html")
 }
 
 // TestCategoryTechPageTitle verifies the term page shows the category name.
 func TestCategoryTechPageTitle(t *testing.T) {
 	buildOnce(t)
-	doc := helpers.ParseFile(t, "categories/technology/index.html")
+	doc := helpers.ParseFile(t, "category/technology/index.html")
 	helpers.AssertText(t, doc, ".gh-page-head h1", "Technology")
 }
 
 // TestCategoryTechPageHasPosts verifies the category page shows posts for that category.
 func TestCategoryTechPageHasPosts(t *testing.T) {
 	buildOnce(t)
-	doc := helpers.ParseFile(t, "categories/technology/index.html")
+	doc := helpers.ParseFile(t, "category/technology/index.html")
 	// "Technology" has 2 fixture posts
 	helpers.AssertSelectorAtLeast(t, doc, ".gh-card", 1)
 }
@@ -141,14 +141,14 @@ func TestCategoryTechPageHasPosts(t *testing.T) {
 // TestCategoryTechDescription verifies the category description from _index.md is shown.
 func TestCategoryTechDescription(t *testing.T) {
 	buildOnce(t)
-	doc := helpers.ParseFile(t, "categories/technology/index.html")
+	doc := helpers.ParseFile(t, "category/technology/index.html")
 	helpers.AssertText(t, doc, ".gh-page-head p", "Computer technology")
 }
 
 // TestCategoryAIPageTitle verifies the AI category page.
 func TestCategoryAIPageTitle(t *testing.T) {
 	buildOnce(t)
-	doc := helpers.ParseFile(t, "categories/ai/index.html")
+	doc := helpers.ParseFile(t, "category/ai/index.html")
 	helpers.AssertText(t, doc, ".gh-page-head h1", "AI")
 }
 

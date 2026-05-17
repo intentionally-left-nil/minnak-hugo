@@ -6,9 +6,12 @@ language = "en"
 paginate = 15
 
 # Taxonomies
+# We use singular keys on both sides: front-matter is `category: [...]` /
+# `tag: [...]`, and the rendered URLs are /category/<slug>/ and
+# /tag/<slug>/. The theme assumes this convention (no fallbacks).
 [taxonomies]
-  category = "categories"
-  tag      = "tags"
+  category = "category"
+  tag      = "tag"
 
 # Theme module — local replace directive in go.mod points to ../
 [module]
@@ -24,21 +27,21 @@ paginate = 15
 [menu]
   [[menu.main]]
     name   = "Technology"
-    url    = "/categories/technology/"
+    url    = "/category/technology/"
     weight = 1
   [[menu.main]]
     name   = "AI"
-    url    = "/categories/ai/"
+    url    = "/category/ai/"
     weight = 2
   [[menu.main]]
     name   = "Cantonese"
-    url    = "/categories/cantonese/"
+    url    = "/category/cantonese/"
     weight = 3
   [[menu.main]]
     name   = "Photography"
-    url    = "/categories/photography/"
+    url    = "/category/photography/"
     weight = 4
   [[menu.main]]
     name   = "PNW"
-    url    = "/categories/pnw/"
+    url    = "/category/pnw/"
     weight = 5

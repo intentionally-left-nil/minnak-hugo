@@ -1,8 +1,8 @@
 ---
 title: "Rust's Ownership Model Is Actually About Time"
 date: 2026-03-15T10:00:00Z
-categories: ["Technology"]
-tags: ["rust", "programming", "memory"]
+category: ["Technology"]
+tag: ["rust", "programming", "memory"]
 summary: "The borrow checker isn't just preventing use-after-free bugs — it's enforcing a temporal discipline that makes concurrent code provably safe."
 feature_image_alt: "Photo by Naoki Suzuki on Unsplash"
 ---

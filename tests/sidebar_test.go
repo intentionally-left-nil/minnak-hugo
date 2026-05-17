@@ -71,11 +71,11 @@ var wantMenuItems = []struct {
 	name string
 	href string
 }{
-	{"Technology", "/categories/technology/"},
-	{"AI", "/categories/ai/"},
-	{"Cantonese", "/categories/cantonese/"},
-	{"Photography", "/categories/photography/"},
-	{"PNW", "/categories/pnw/"},
+	{"Technology", "/category/technology/"},
+	{"AI", "/category/ai/"},
+	{"Cantonese", "/category/cantonese/"},
+	{"Photography", "/category/photography/"},
+	{"PNW", "/category/pnw/"},
 }
 
 // TestSidebarCategoryMenuItems verifies the sidebar categories list
@@ -126,7 +126,8 @@ func TestSidebarRecentPostsAreLinks(t *testing.T) {
 }
 
 // TestSidebarRecentPostsOrder verifies the most-recent post is listed first.
-// The fixture most-recent post (by date) is "Rust's Ownership Model..." (2026-03-15).
+// The fixture most-recent post (by date) is "Mount Rainier in Four Frames"
+// (2026-04-01).
 func TestSidebarRecentPostsOrder(t *testing.T) {
 	buildOnce(t)
 	doc := helpers.ParseFile(t, "index.html")
@@ -134,7 +135,7 @@ func TestSidebarRecentPostsOrder(t *testing.T) {
 	firstTitle := strings.TrimSpace(
 		doc.Find(".widget_recent_entries li a").First().Text(),
 	)
-	wantFirst := "Rust's Ownership Model Is Actually About Time"
+	wantFirst := "Mount Rainier in Four Frames"
 	if firstTitle != wantFirst {
 		t.Errorf("first recent post: got %q, want %q", firstTitle, wantFirst)
 	}

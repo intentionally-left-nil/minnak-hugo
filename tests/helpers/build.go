@@ -161,6 +161,8 @@ func PostTitles() []string {
 		"Golden Hour on the Carbon River Road",
 		"Winter on the Wonderland Trail: What No One Tells You",
 		"Diffusion Models From First Principles",
+		"Mount Rainier in Four Frames",
+		"Two Years With a Fairphone",
 	}
 }
 

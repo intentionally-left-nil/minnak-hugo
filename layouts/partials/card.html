@@ -3,20 +3,39 @@
     Used on list pages (home, term/category, section).
 
     Expects: a Page object (either . or a page passed as context).
+
     Feature image: looks for a page-bundle resource named "feature.*"
-    first, then falls back to .Params.feature_image (plain URL string).
+    first, then falls back to the resource referenced by
+    .Params.cover.image (e.g. "images/Fairphone.jpg") for sites
+    migrated from WordPress.
 
     Image pipeline: WebP + JPEG <picture> at six sizes matching the
     Ghost theme's image_sizes config (30, 100, 300, 600, 1200, 2000px).
     AVIF deferred to M12.
+
+    Taxonomies: the site's [taxonomies] block declares both sides as
+    "category", so we call .GetTerms "category" and read each term's
+    .RelPermalink rather than hand-building /category/<slug>/ URLs.
+    This honours subpath baseURLs and custom term slugs.
 */ -}}
 
 {{- $page := . -}}
 {{- $img := "" -}}
 
-{{- /* 1. Try page-bundle resource (preferred — enables processing) */}}
+{{- /* 1. Try page-bundle resource named feature.* (preferred) */}}
 {{- with $page.Resources.GetMatch "feature.*" -}}
     {{- $img = . -}}
+{{- end -}}
+
+{{- /* 2. Fall back to cover.image path inside the bundle */}}
+{{- if not $img -}}
+    {{- with $page.Params.cover -}}
+        {{- with .image -}}
+            {{- with $page.Resources.GetMatch . -}}
+                {{- $img = . -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
 {{- end -}}
 
 <article class="gh-card">
@@ -39,7 +58,7 @@
             />
             <img
                 src="{{ ($img.Resize "600x").RelPermalink }}"
-                alt="{{ with $page.Params.feature_image_alt }}{{ . }}{{ else }}{{ $page.Title }}{{ end }}"
+                alt="{{ with $page.Params.cover.alt }}{{ . }}{{ else }}{{ $page.Title }}{{ end }}"
                 class="gh-card-image"
                 loading="lazy"
                 width="{{ ($img.Resize "600x").Width }}"
@@ -58,9 +77,10 @@
             <time datetime="{{ $page.Date.Format "2006-01-02" }}">
                 {{- $page.Date.Format "January 2, 2006" -}}
             </time>
-            {{- with index $page.Params.categories 0 -}}
-            {{- $catSlug := . | urlize -}}
-            <a class="gh-card-tag" href="/categories/{{ $catSlug }}/">{{ . }}</a>
+            {{- with ($page.GetTerms "category") -}}
+                {{- with index . 0 -}}
+            <a class="gh-card-tag" href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+                {{- end -}}
             {{- end -}}
         </span>
 

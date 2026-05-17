@@ -46,9 +46,13 @@ Minimal `hugo.toml` for a new site:
 baseURL  = "https://yoursite.example/"
 title    = "Your Site Title"
 
+# The theme expects singular taxonomy keys on both sides — front matter
+# uses `category:` / `tag:` (singular) and the rendered URLs are
+# /category/<slug>/ and /tag/<slug>/. This matches the convention used
+# by sites migrated from WordPress.
 [taxonomies]
-  category = "categories"
-  tag      = "tags"
+  category = "category"
+  tag      = "tag"
 
 paginate = 15
 
@@ -56,15 +60,16 @@ paginate = 15
   description = "Your site description"
   search      = true          # set false to disable Pagefind mount
 
-# Main navigation — drives the Categories tab in the sidebar
+# Main navigation — drives the Categories tab in the sidebar.
+# URLs use the singular /category/ form to match the [taxonomies] block.
 [menu]
   [[menu.main]]
     name   = "Technology"
-    url    = "/categories/technology/"
+    url    = "/category/technology/"
     weight = 1
   [[menu.main]]
     name   = "AI"
-    url    = "/categories/ai/"
+    url    = "/category/ai/"
     weight = 2
 ```
 
@@ -76,11 +81,17 @@ Posts go in `content/posts/`. Front matter convention:
 ---
 title: "Post Title"
 date: 2026-03-15T10:00:00Z
-categories: ["Technology"]   # exactly one — drives the sidebar category tab
-tags: ["rust", "systems"]    # optional; shown as pills in post footer
+category: ["Technology"]    # exactly one — drives the sidebar category tab
+tag: ["rust", "systems"]    # optional; shown as pills in post footer
 summary: "Short excerpt shown on cards."
 ---
 ```
+
+> **Note on singular keys:** the theme reads `.Params.category` and
+> `.Params.tag`, and links to `/category/<slug>/` and `/tag/<slug>/`.
+> Make sure the front matter keys (and the `[taxonomies]` block in
+> `hugo.toml`) are singular — using plural `categories:` / `tags:` will
+> result in empty taxonomy widgets and broken links.
 
 Standalone pages (About, etc.) go anywhere else in `content/` with `type: page`:
 
@@ -91,7 +102,7 @@ type: "page"
 ---
 ```
 
-Category term pages can have a description via `content/categories/<slug>/_index.md`:
+Category term pages can have a description via `content/category/<slug>/_index.md`:
 
 ```yaml
 ---
@@ -99,6 +110,77 @@ title: "Technology"
 description: "Computer technology and coding articles"
 ---
 ```
+
+### Cover / feature images
+
+Each post can have a hero image rendered on its summary card. The theme
+resolves it in this order:
+
+1. **`feature.*`** in the page bundle (preferred for new content):
+
+   ```text
+   content/posts/my-post/
+   ├── index.md
+   └── feature.jpg
+   ```
+
+   No front-matter changes needed — `feature.jpg`, `feature.png`,
+   `feature.webp`, etc. are all picked up automatically.
+
+2. **`cover.image`** in front matter (for content migrated from
+   WordPress, where images live under `images/`):
+
+   ```yaml
+   ---
+   title: "Two Years With a Fairphone"
+   cover:
+     image: images/Fairphone.jpg
+     alt:   "A Fairphone on a wooden desk"
+   ---
+   ```
+
+   The path is resolved relative to the page bundle, so the image must
+   exist at `content/posts/my-post/images/Fairphone.jpg`.
+
+In either case the theme generates a `<picture>` block with WebP and
+JPEG sources at six widths (30, 100, 300, 600, 1200, 2000 px). The alt
+text falls back from `cover.alt` → page title.
+
+### Gallery shortcode
+
+Drop multiple images into a page bundle under `images/gallery/` and
+declare captions in the post's `resources:` front matter:
+
+```yaml
+---
+title: "Mount Rainier in Four Frames"
+date: 2026-04-01T08:00:00Z
+category: ["Photography"]
+resources:
+  - src: "images/gallery/photo-01.jpg"
+    title: "Sunrise on the eastern flank"
+  - src: "images/gallery/photo-02.jpg"
+    title: "Tipsoo Lake reflection at dawn"
+---
+
+Some prose…
+
+{{</* gallery cols="3" */>}}
+```
+
+The shortcode emits a `<figure>` per image with a square thumbnail
+(cropped via Hugo's `.Fill`) linked to the full-size original. The
+caption comes from each resource's `.Title`. Images are enumerated in
+the order they appear in the `resources:` block.
+
+The `cols` parameter (default `1`) controls the desktop column count.
+On smaller viewports the grid collapses automatically:
+
+| Viewport          | `cols="3"` actual columns |
+|-------------------|---------------------------|
+| ≥ 992 px (desktop)| 3                         |
+| 601–991 px (tablet)| 2                        |
+| ≤ 600 px (mobile) | 1                         |
 
 ## Search (Pagefind)
 
@@ -140,10 +222,10 @@ make build
 # Build + index search (outputs to exampleSite/public/pagefind/)
 make pagefind
 
-# Run Go markup tests (50 assertions)
+# Run Go markup tests
 make test
 
-# Run Playwright E2E tests (sidebar JS, responsive layout)
+# Run Playwright E2E tests (sidebar JS, responsive layout, gallery)
 make e2e
 
 # Run Playwright tests including search (requires make pagefind first)

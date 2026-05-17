@@ -1,8 +1,8 @@
 ---
 title: "Diffusion Models From First Principles"
 date: 2026-03-10T12:00:00Z
-categories: ["AI"]
-tags: ["diffusion", "ml", "generative-models"]
+category: ["AI"]
+tag: ["diffusion", "ml", "generative-models"]
 summary: "Denoising diffusion probabilistic models are often explained through the lens of score matching or variational inference. Here's a more intuitive path."
 feature_image_alt: "Whimsical drawings on brown paper attached to a wall — Photo by Brother Yoon on Unsplash"
 ---

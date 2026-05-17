@@ -1397,3 +1397,56 @@ body.open-sidebar .gh-main::after {
     font-size: 1.2rem;
     color: var(--text-muted);
 }
+
+/* ─── Gallery shortcode ─────────────────────────────────────────────────── */
+/*
+ * The shortcode emits <div class="gallery gallery-cols-N">…</div>. The
+ * requested column count is honoured on desktop; on smaller viewports we
+ * drop to fewer columns so thumbnails stay legible.
+ */
+.gallery {
+    display: grid;
+    gap: 1rem;
+    margin: 2rem 0;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+.gallery-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.gallery-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.gallery-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+.gallery-item {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+}
+
+.gallery-item figcaption {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    line-height: 1.4;
+}
+
+/* Tablet: cap at 2 columns regardless of cols parameter */
+@media (max-width: 991px) {
+    .gallery-cols-3,
+    .gallery-cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Mobile: single column on narrow viewports */
+@media (max-width: 600px) {
+    .gallery-cols-2,
+    .gallery-cols-3,
+    .gallery-cols-4 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+}

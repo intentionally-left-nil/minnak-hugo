@@ -13,11 +13,19 @@
                                 {{- .Date.Format "January 2, 2006" -}}
                             </time>
                         </span>
-                        {{- with index .Params.categories 0 -}}
-                        {{- $catSlug := . | urlize -}}
+                        {{- /* Primary category. The site's [taxonomies]
+                               block declares both sides as "category", so
+                               the front-matter key is `category:`. We use
+                               .GetTerms to get the term Page and read its
+                               .RelPermalink — never hand-build the URL,
+                               so subpath baseURLs and custom term slugs
+                               are honoured. */ -}}
+                        {{- with (.GetTerms "category") -}}
+                            {{- with index . 0 -}}
                         <span class="cat-links" data-pagefind-filter="category">
-                            <a href="/categories/{{ $catSlug }}/">{{ . }}</a>
+                            <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
                         </span>
+                            {{- end -}}
                         {{- end -}}
                     </div>
                 </header>
@@ -27,11 +35,10 @@
                 </div>
 
                 <footer class="entry-footer">
-                    {{- $tags := .Params.tags -}}
-                    {{- with $tags }}
+                    {{- with (.GetTerms "tag") }}
                     <div class="tags-links">
-                        {{- range $tags -}}
-                        <a href="/tags/{{ . | urlize }}/">{{ . }}</a>
+                        {{- range . -}}
+                        <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
                         {{- end -}}
                     </div>
                     {{- end }}

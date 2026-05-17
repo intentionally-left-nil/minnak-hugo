@@ -1,0 +1,44 @@
+{{- /*
+    shortcodes/gallery.html — Page-bundle image gallery
+
+    Usage:
+        {{< gallery cols="3" >}}
+
+    Enumerates resources matching "images/gallery/*" in declaration
+    order (as listed in the page's `resources:` front matter) and
+    renders each as a <figure> containing a square thumbnail (cropped
+    via .Fill) linked to the full-size image.
+
+    Captions come from each resource's .Title, which is set via the
+    `resources:` front matter metadata, e.g.:
+
+        resources:
+          - src: images/gallery/photo-01.jpg
+            title: "A caption for this photo"
+
+    No inner content, no RenderString, no nested shortcodes — keeps
+    Goldmark's raw-HTML handling out of the picture.
+*/ -}}
+{{- $cols := .Get "cols" | default "1" -}}
+{{- $images := .Page.Resources.Match "images/gallery/*" -}}
+{{- if $images -}}
+<div class="gallery gallery-cols-{{ $cols }}">
+    {{- range $images -}}
+        {{- $thumb := .Fill "400x400" -}}
+        <figure class="gallery-item">
+            <a href="{{ .RelPermalink }}">
+                <img
+                    src="{{ $thumb.RelPermalink }}"
+                    alt="{{ .Title }}"
+                    width="{{ $thumb.Width }}"
+                    height="{{ $thumb.Height }}"
+                    loading="lazy"
+                />
+            </a>
+            {{- with .Title -}}
+            <figcaption>{{ . }}</figcaption>
+            {{- end -}}
+        </figure>
+    {{- end -}}
+</div>
+{{- end -}}

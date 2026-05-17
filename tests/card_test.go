@@ -46,7 +46,7 @@ func TestCardCategoryLink(t *testing.T) {
 	helpers.AssertSelectorAtLeast(t, doc, ".gh-card .gh-card-tag[href]", 1)
 }
 
-// TestCardCategoryLinkPoints verifies a category link points to /categories/.
+// TestCardCategoryLinkPoints verifies a category link points to /category/.
 func TestCardCategoryLinkPoints(t *testing.T) {
 	buildOnce(t)
 	doc := helpers.ParseFile(t, "index.html")
@@ -55,8 +55,9 @@ func TestCardCategoryLinkPoints(t *testing.T) {
 		t.Error("expected a category link on a card")
 		return
 	}
-	if len(href) < 12 || href[:12] != "/categories/" {
-		t.Errorf("card category link: got %q, want prefix /categories/", href)
+	const want = "/category/"
+	if len(href) < len(want) || href[:len(want)] != want {
+		t.Errorf("card category link: got %q, want prefix %q", href, want)
 	}
 }
 

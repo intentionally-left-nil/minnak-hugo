@@ -1,8 +1,8 @@
 ---
 title: "Golden Hour on the Carbon River Road"
 date: 2026-02-14T07:30:00Z
-categories: ["Photography"]
-tags: ["landscape", "film", "pnw"]
+category: ["Photography"]
+tag: ["landscape", "film", "pnw"]
 summary: "Shooting the Carbon River section of Mount Rainier National Park at golden hour with a Pentax K1000 loaded with Kodak Portra 400."
 feature_image_alt: "Photo by Satwika Ananta on Unsplash"
 ---
