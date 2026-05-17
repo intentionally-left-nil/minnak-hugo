@@ -46,7 +46,7 @@
     --border-idle:    #787D80;
 
     /* Sidebar layout */
-    --sidebar-header-h: 135px;
+    --sidebar-header-h: 185px;
     --sidebar-footer-h: 0px;
 
     /* Fonts */
@@ -395,6 +395,17 @@ h6 { font-size: 2.2rem; }
     letter-spacing: 0;
 }
 
+/* Search trigger — sits below the site title inside .site-header */
+.site-search {
+    padding: 0 12px 16px;
+}
+
+/* Style the pagefind-component-ui trigger to look like a fake input bar */
+.site-search pagefind-modal-trigger {
+    display: block;
+    width: 100%;
+}
+
 /* Mobile toggle button — hidden on desktop */
 .toggle-button {
     display: none;
@@ -645,6 +656,8 @@ h6 { font-size: 2.2rem; }
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         z-index: 170;
     }
+
+    .site-search { display: none; }
 
     .site-branding .site-title {
         font-size: 1.4rem;
@@ -1345,58 +1358,6 @@ body.open-sidebar .gh-main::after {
 /* =============================================================
    16. Pagefind dark-theme overrides
    ============================================================= */
-
-#search {
-    --pagefind-ui-scale: 0.8;
-    --pagefind-ui-primary:     var(--text-primary);
-    --pagefind-ui-text:        var(--text-secondary);
-    --pagefind-ui-background:  var(--bg-page);
-    --pagefind-ui-border:      var(--border-idle);
-    --pagefind-ui-border-radius: 3px;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-image-border-radius: 3px;
-    --pagefind-ui-image-box-ratio: 3 / 2;
-    --pagefind-ui-font: LatoLatin, var(--font-sans-serif);
-    font-size: 1.4rem;
-}
-
-/* Make the Pagefind input match the sidebar widget-tab search field look */
-#search .pagefind-ui__search-input {
-    background: var(--bg-page);
-    border: 1px solid rgba(183, 189, 192, 0.25);
-    color: var(--text-secondary);
-    border-radius: 3px;
-    font-size: 1.4rem;
-    height: 36px;
-    padding: 0 6px;
-}
-
-#search .pagefind-ui__search-input::placeholder { color: var(--text-secondary); }
-#search .pagefind-ui__search-input:focus { border-color: rgba(183, 189, 192, 0.6); outline: none; }
-
-#search .pagefind-ui__search-clear {
-    background: #424648;
-    color: var(--text-primary);
-    border-radius: 0 3px 3px 0;
-}
-
-#search .pagefind-ui__result {
-    border-top: 1px solid rgba(183, 189, 192, 0.15);
-    padding: 8px 0;
-}
-
-#search .pagefind-ui__result-title a,
-#search .pagefind-ui__result-excerpt {
-    font-size: 1.3rem;
-    color: var(--text-secondary);
-}
-
-#search .pagefind-ui__result-title a:hover { color: var(--text-primary); }
-
-#search .pagefind-ui__message {
-    font-size: 1.2rem;
-    color: var(--text-muted);
-}
 
 /* ─── Gallery shortcode ─────────────────────────────────────────────────── */
 /*
