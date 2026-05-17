@@ -53,7 +53,7 @@
                             <div class="menu-scrollable">
 
                                 {{- /* Pagefind search mount point */}}
-                                {{- if ne (.Site.Params.search | default true) false }}
+                                {{- if ne .Site.Params.search false }}
                                 <section class="widget widget_search">
                                     <div id="search"></div>
                                 </section>
