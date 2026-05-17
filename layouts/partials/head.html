@@ -37,7 +37,7 @@
      Set params.search = false in hugo.toml to omit entirely.
      Guard against PagefindUI being undefined (e.g. hugo server without
      a pre-built index) so no ReferenceError is thrown. */}}
-{{- if ne (.Site.Params.search | default true) false }}
+{{- if ne .Site.Params.search false }}
 <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
 <script src="/pagefind/pagefind-ui.js"></script>
 <script>
