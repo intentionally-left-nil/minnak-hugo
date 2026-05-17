@@ -163,6 +163,7 @@ func PostTitles() []string {
 		"Diffusion Models From First Principles",
 		"Mount Rainier in Four Frames",
 		"Two Years With a Fairphone",
+		"Card Excerpt Test Fixture",
 	}
 }
 

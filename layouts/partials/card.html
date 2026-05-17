@@ -84,7 +84,9 @@
             {{- end -}}
         </span>
 
-        <p>{{ $page.Summary }}</p>
+        {{- $words := $page.PlainWords -}}
+        {{- $truncated := gt (len $words) 35 -}}
+        <p>{{ delimit (first 35 $words) " " }}{{ if $truncated }} ...{{ end }}</p>
 
         <a class="read-more-link" href="{{ $page.RelPermalink }}">Read more &#x27F6;</a>
     </div>
