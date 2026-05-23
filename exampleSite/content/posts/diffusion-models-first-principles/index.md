@@ -4,7 +4,9 @@ date: 2026-03-10T12:00:00Z
 category: ["AI"]
 tag: ["diffusion", "ml", "generative-models"]
 summary: "Denoising diffusion probabilistic models are often explained through the lens of score matching or variational inference. Here's a more intuitive path."
-feature_image_alt: "Whimsical drawings on brown paper attached to a wall — Photo by Brother Yoon on Unsplash"
+cover:
+  src: "feature.jpg"
+  alt: "Whimsical drawings on brown paper attached to a wall — Photo by Brother Yoon on Unsplash"
 ---
 
 Denoising diffusion probabilistic models are often explained through the lens of score matching or variational inference. Here's a more intuitive path.

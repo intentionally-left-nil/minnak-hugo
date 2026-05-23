@@ -4,7 +4,9 @@ date: 2026-01-28T08:00:00Z
 category: ["PNW"]
 tag: ["hiking", "washington", "backcountry"]
 summary: "The Wonderland Trail circumnavigates Mount Rainier — 93 miles, 22,000 feet of elevation gain. Attempting a section in January is a different endeavor entirely."
-feature_image_alt: "Photo by Abiwin Krisna on Unsplash"
+cover:
+  src: "feature.jpg"
+  alt: "Photo by Abiwin Krisna on Unsplash"
 ---
 
 The Wonderland Trail circumnavigates Mount Rainier — 93 miles, 22,000 feet of elevation gain. Attempting a section in January is a different endeavor entirely.

@@ -1,0 +1,105 @@
+{{- /*
+    shortcodes/figure.html — Figure with Hugo image processing
+
+    Overrides Hugo's built-in figure shortcode to add WebP/JPEG srcset,
+    lazy loading, and gallery-awareness via .Parent.
+
+    Params:
+        src      — page-bundle resource path or external URL (required
+                   unless cover=true)
+        alt      — alt text for screen readers (recommended)
+        caption  — display caption rendered below the image (optional)
+        cover    — set to true to read src/alt/caption from the page's
+                   cover: front matter. Explicitly passed src/alt/caption
+                   params take precedence over front-matter values.
+
+    When called inside a {{< gallery >}} shortcode, renders a
+    <figure class="gallery-item"> with a 400×400 square-cropped thumbnail
+    linked to the full-size original.
+
+    When called standalone, renders a <figure> with a <picture> element:
+    WebP + JPEG srcset at six widths (480, 720, 960, 1200, 1600, 2000px),
+    lazy-loaded with explicit dimensions to prevent layout shift (CLS).
+*/ -}}
+{{- $src     := .Get "src" -}}
+{{- $alt     := .Get "alt" -}}
+{{- $caption := .Get "caption" -}}
+
+{{- /* cover=true: pull src/alt/caption from page front matter */}}
+{{- if .Get "cover" -}}
+    {{- with $.Page.Params.cover -}}
+        {{- $src     = or $src     .src -}}
+        {{- $alt     = or $alt     .alt -}}
+        {{- $caption = or $caption .caption -}}
+    {{- else -}}
+        {{- warnf "The %q shortcode has cover=true but the page has no cover: front matter: see %s" $.Name $.Position -}}
+    {{- end -}}
+{{- end -}}
+
+{{- $alt     = $alt     | default "" -}}
+{{- $caption = $caption | default "" -}}
+
+{{- with $src -}}
+    {{- $res := $.Page.Resources.Get $src -}}
+    {{- if $res -}}
+        {{- if $.Parent -}}
+            {{/* ── Gallery child mode ─────────────────────────────────── */}}
+            {{- $thumb   := $res.Fill "400x400" -}}
+            {{- $preview := $res.Resize "1200x" -}}
+            <figure class="gallery-item">
+                <a href="{{ $res.RelPermalink }}" data-lightbox-src="{{ $preview.RelPermalink }}">
+                    <img
+                        src="{{ $thumb.RelPermalink }}"
+                        alt="{{ $alt }}"
+                        width="{{ $thumb.Width }}"
+                        height="{{ $thumb.Height }}"
+                        loading="lazy"
+                    />
+                </a>
+                {{- with $caption -}}
+                <figcaption>{{ . }}</figcaption>
+                {{- end -}}
+            </figure>
+        {{- else -}}
+            {{/* ── Standalone mode ─────────────────────────────────────── */}}
+            {{- $widths   := slice 480 720 960 1200 1600 2000 -}}
+            {{- $fallback := $res.Resize "960x" -}}
+            <figure>
+                <picture>
+                    <source
+                        srcset="{{ range $i, $w := $widths }}{{ if $i }}, {{ end }}{{ ($res.Resize (printf "%dx webp" $w)).RelPermalink }} {{ $w }}w{{ end }}"
+                        sizes="(min-width: 900px) 720px, 100vw"
+                        type="image/webp"
+                    />
+                    <source
+                        srcset="{{ range $i, $w := $widths }}{{ if $i }}, {{ end }}{{ ($res.Resize (printf "%dx" $w)).RelPermalink }} {{ $w }}w{{ end }}"
+                        sizes="(min-width: 900px) 720px, 100vw"
+                    />
+                    <img
+                        src="{{ $fallback.RelPermalink }}"
+                        alt="{{ $alt }}"
+                        loading="lazy"
+                        width="{{ $fallback.Width }}"
+                        height="{{ $fallback.Height }}"
+                    />
+                </picture>
+                {{- with $caption -}}
+                <figcaption>{{ . }}</figcaption>
+                {{- end -}}
+            </figure>
+        {{- end -}}
+    {{- else -}}
+        {{/* ── External/absolute URL fallback ─────────────────────────── */}}
+        {{- if not (strings.HasPrefix $src "http") -}}
+            {{- warnf "The %q shortcode could not find %q as a page resource: see %s" $.Name $src $.Position -}}
+        {{- end -}}
+        <figure{{ if $.Parent }} class="gallery-item"{{ end }}>
+            <img src="{{ $src }}" alt="{{ $alt }}" loading="lazy" />
+            {{- with $caption -}}
+            <figcaption>{{ . }}</figcaption>
+            {{- end -}}
+        </figure>
+    {{- end -}}
+{{- else -}}
+    {{- errorf "The %q shortcode requires a 'src' argument (or cover=true with a cover: front matter block): see %s" .Name .Position -}}
+{{- end -}}

@@ -11,10 +11,11 @@ import (
 // ----------------------------------------------------------------------------
 // Gallery shortcode markup
 //
-// The shortcode {{< gallery cols="3" >}} enumerates a post bundle's
-// images/gallery/* resources in declaration order, renders each as a
-// <figure> with a square thumbnail (cropped via .Fill) linked to the
-// full-size image, and uses the resource's .Title as the caption.
+// The shortcode {{< gallery cols="3" >}} wraps nested {{< figure >}}
+// shortcodes. Each child figure detects .Parent and renders as a
+// <figure class="gallery-item"> with a 400×400 square thumbnail (cropped
+// via .Fill) linked to the full-size image. alt and caption are separate
+// params on each figure — they can hold different values.
 //
 // These tests run against the `posts/gallery-mount-rainier/` fixture.
 // Responsive layout (column counts at different viewports) lives in the
@@ -33,8 +34,8 @@ func TestGalleryWrapperColsClass(t *testing.T) {
 	helpers.AssertSelector(t, doc, ".gallery.gallery-cols-3", 1)
 }
 
-// TestGalleryRendersAllImages verifies one <figure> per resource (the
-// fixture has four images).
+// TestGalleryRendersAllImages verifies one <figure> per nested figure
+// shortcode (the fixture has four).
 func TestGalleryRendersAllImages(t *testing.T) {
 	buildOnce(t)
 	doc := helpers.ParseFile(t, galleryPostPath)
@@ -79,10 +80,9 @@ func TestGalleryThumbnailsLinkToFullImage(t *testing.T) {
 	})
 }
 
-// TestGalleryPreservesDeclarationOrder verifies the shortcode emits
-// figures in the order they appear in the post's `resources:` list, not
-// alphabetical or random. The fixture intentionally lists them 01→04.
-func TestGalleryPreservesDeclarationOrder(t *testing.T) {
+// TestGalleryPreservesInlineOrder verifies the shortcode emits figures in
+// the order they appear inline in the content (photo-01 through photo-04).
+func TestGalleryPreservesInlineOrder(t *testing.T) {
 	buildOnce(t)
 	doc := helpers.ParseFile(t, galleryPostPath)
 
@@ -99,18 +99,18 @@ func TestGalleryPreservesDeclarationOrder(t *testing.T) {
 	}
 }
 
-// TestGalleryCaptionsFromResourceTitle verifies <figcaption> text is
-// pulled from the resource's .Title (set in front-matter `resources:`).
-func TestGalleryCaptionsFromResourceTitle(t *testing.T) {
+// TestGalleryCaptionsFromShortcodeParam verifies <figcaption> text is
+// pulled from the caption= param on each nested figure shortcode.
+func TestGalleryCaptionsFromShortcodeParam(t *testing.T) {
 	buildOnce(t)
 	doc := helpers.ParseFile(t, galleryPostPath)
 
 	captions := helpers.AllTexts(doc, ".gallery .gallery-item figcaption")
 	wantCaptions := []string{
-		"Sunrise on Sunrise — east-facing slopes catching the first light",
-		"Tipsoo Lake reflection at dawn",
-		"Lupine and paintbrush on the Skyline Trail",
-		"The Nisqually glacier from Glacier Vista",
+		"Sunrise on Sunrise",
+		"Tipsoo Lake at dawn",
+		"Skyline Trail wildflowers",
+		"Nisqually glacier from Glacier Vista",
 	}
 
 	if len(captions) != len(wantCaptions) {
@@ -150,9 +150,9 @@ func TestGalleryThumbnailsAreSquare(t *testing.T) {
 	})
 }
 
-// TestGalleryImgAltMatchesCaption verifies each <img alt> uses the
-// resource title (same source as the caption).
-func TestGalleryImgAltMatchesCaption(t *testing.T) {
+// TestGalleryImgAltIsNonEmpty verifies each gallery thumbnail has a
+// non-empty alt attribute.
+func TestGalleryImgAltIsNonEmpty(t *testing.T) {
 	buildOnce(t)
 	doc := helpers.ParseFile(t, galleryPostPath)
 
@@ -161,6 +161,52 @@ func TestGalleryImgAltMatchesCaption(t *testing.T) {
 		alt, _ := s.Attr("alt")
 		if alt == "" {
 			t.Errorf("img %d: empty alt attribute", i)
+		}
+	})
+}
+
+// TestGalleryAltAndCaptionAreDistinct verifies that the alt attribute and
+// the <figcaption> text are independent fields and can hold different values.
+// The fixture uses shorter display captions with fuller alt descriptions.
+func TestGalleryAltAndCaptionAreDistinct(t *testing.T) {
+	buildOnce(t)
+	doc := helpers.ParseFile(t, galleryPostPath)
+
+	items := doc.Find(".gallery .gallery-item")
+	items.Each(func(i int, s *goquery.Selection) {
+		alt, _ := s.Find("img").First().Attr("alt")
+		caption := strings.TrimSpace(s.Find("figcaption").Text())
+		if alt == "" || caption == "" {
+			t.Errorf("item %d: alt=%q caption=%q — both must be non-empty", i, alt, caption)
+			return
+		}
+		if alt == caption {
+			t.Errorf("item %d: alt and caption are identical (%q) — fixture expects them to differ", i, alt)
+		}
+	})
+}
+
+// TestGalleryAltTexts verifies the exact alt text on each gallery image
+// matches the alt= param passed to each nested figure shortcode.
+func TestGalleryAltTexts(t *testing.T) {
+	buildOnce(t)
+	doc := helpers.ParseFile(t, galleryPostPath)
+
+	imgs := doc.Find(".gallery .gallery-item img")
+	wantAlts := []string{
+		"Sunrise on east-facing slopes of Mount Rainier catching the first light",
+		"Tipsoo Lake reflecting Mount Rainier at dawn",
+		"Lupine and paintbrush wildflowers on the Skyline Trail",
+		"The Nisqually glacier viewed from Glacier Vista",
+	}
+
+	if imgs.Length() != len(wantAlts) {
+		t.Fatalf("expected %d images, got %d", len(wantAlts), imgs.Length())
+	}
+	imgs.Each(func(i int, s *goquery.Selection) {
+		alt, _ := s.Attr("alt")
+		if alt != wantAlts[i] {
+			t.Errorf("img %d alt: got %q, want %q", i, alt, wantAlts[i])
 		}
 	})
 }
@@ -179,16 +225,12 @@ func TestGalleryLazyLoading(t *testing.T) {
 	})
 }
 
-// TestGalleryShortcodeNotPresentWithoutResources verifies the shortcode
-// emits no markup when invoked on a page bundle with no
-// images/gallery/* resources. We use the rust post as a control case.
-func TestGalleryShortcodeEmptyForPostWithoutGallery(t *testing.T) {
+// TestGalleryShortcodeNotPresentOnNonGalleryPost verifies the gallery-related
+// selectors are not matched on a post that does not use the gallery shortcode.
+func TestGalleryShortcodeNotPresentOnNonGalleryPost(t *testing.T) {
 	buildOnce(t)
 	doc := helpers.ParseFile(t, "posts/rust-ownership-model/index.html")
 
-	// The rust post does not invoke the shortcode at all. This test is
-	// a smoke check that the gallery-related selectors are not being
-	// matched by some other partial.
 	if doc.Find(".gallery").Length() != 0 {
 		t.Error("did not expect a .gallery element on a non-gallery post")
 	}
