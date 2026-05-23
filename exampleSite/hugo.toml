@@ -13,6 +13,18 @@ paginate = 15
   category = "category"
   tag      = "tag"
 
+# Output formats: generate RSS only for the home page, not tags/categories
+[outputs]
+  home     = ['html', 'rss']
+  section  = ['html']
+  taxonomy = ['html']
+  term     = ['html']
+
+# Rename the RSS feed file from index.xml to rss.xml
+[outputFormats]
+  [outputFormats.RSS]
+    baseName = "rss"
+
 # Theme module — local replace directive in go.mod points to ../
 [module]
   [[module.imports]]
