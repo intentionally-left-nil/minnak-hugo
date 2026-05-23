@@ -4,7 +4,9 @@ date: 2026-03-01T14:00:00Z
 category: ["AI"]
 tag: ["llm", "language", "evaluation"]
 summary: "Large language models perform surprisingly well on Mandarin but struggle with Cantonese in ways that reveal the limits of training data distribution."
-feature_image_alt: "Photo by Kevin Canlas on Unsplash"
+cover:
+  src: "feature.jpg"
+  alt: "Photo by Kevin Canlas on Unsplash"
 ---
 
 Large language models perform surprisingly well on Mandarin but struggle with Cantonese in ways that reveal the limits of training data distribution.

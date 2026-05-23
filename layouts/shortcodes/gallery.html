@@ -1,44 +1,21 @@
 {{- /*
-    shortcodes/gallery.html — Page-bundle image gallery
+    shortcodes/gallery.html — Image gallery wrapper
 
     Usage:
         {{< gallery cols="3" >}}
+          {{< figure src="images/gallery/photo-01.jpg" alt="..." caption="..." />}}
+          {{< figure src="images/gallery/photo-02.jpg" alt="..." caption="..." />}}
+        {{< /gallery >}}
 
-    Enumerates resources matching "images/gallery/*" in declaration
-    order (as listed in the page's `resources:` front matter) and
-    renders each as a <figure> containing a square thumbnail (cropped
-    via .Fill) linked to the full-size image.
+    Params:
+        cols — number of columns: 1 (default), 2, 3, or 4
 
-    Captions come from each resource's .Title, which is set via the
-    `resources:` front matter metadata, e.g.:
-
-        resources:
-          - src: images/gallery/photo-01.jpg
-            title: "A caption for this photo"
-
-    No inner content, no RenderString, no nested shortcodes — keeps
-    Goldmark's raw-HTML handling out of the picture.
+    Child {{< figure >}} shortcodes detect .Parent and render as gallery
+    items: 400×400 square thumbnails linked to the full-size original.
+    Per-image alt text and captions are declared inline as shortcode
+    arguments rather than in a separate resources: front matter block.
 */ -}}
 {{- $cols := .Get "cols" | default "1" -}}
-{{- $images := .Page.Resources.Match "images/gallery/*" -}}
-{{- if $images -}}
 <div class="gallery gallery-cols-{{ $cols }}">
-    {{- range $images -}}
-        {{- $thumb := .Fill "400x400" -}}
-        <figure class="gallery-item">
-            <a href="{{ .RelPermalink }}">
-                <img
-                    src="{{ $thumb.RelPermalink }}"
-                    alt="{{ .Title }}"
-                    width="{{ $thumb.Width }}"
-                    height="{{ $thumb.Height }}"
-                    loading="lazy"
-                />
-            </a>
-            {{- with .Title -}}
-            <figcaption>{{ . }}</figcaption>
-            {{- end -}}
-        </figure>
-    {{- end -}}
+    {{- .Inner -}}
 </div>
-{{- end -}}

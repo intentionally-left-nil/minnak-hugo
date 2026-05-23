@@ -5,7 +5,7 @@ category: ["Technology"]
 tag: ["hardware", "sustainability", "review"]
 summary: "Notes on long-term ownership of a phone designed to be repaired — the modular battery swap that took five minutes, the camera module upgrade, and the things the spec sheet doesn't capture."
 cover:
-  image: images/Fairphone.jpg
+  src: images/Fairphone.jpg
   alt: "A Fairphone on a wooden desk with its back cover removed"
 ---
 

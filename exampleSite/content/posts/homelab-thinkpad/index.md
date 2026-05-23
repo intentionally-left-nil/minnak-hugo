@@ -4,7 +4,9 @@ date: 2026-02-20T09:00:00Z
 category: ["Technology"]
 tag: ["homelab", "linux", "networking"]
 summary: "An old ThinkPad X230, a fresh NixOS install, and a few evenings of configuration later — here's what I learned running a personal server at home."
-feature_image_alt: "Photo by André Furtado on Unsplash"
+cover:
+  src: "feature.jpg"
+  alt: "Photo by André Furtado on Unsplash"
 ---
 
 An old ThinkPad X230, a fresh NixOS install, and a few evenings of configuration later — here's what I learned running a personal server at home.
