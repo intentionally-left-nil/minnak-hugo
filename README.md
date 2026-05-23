@@ -60,6 +60,18 @@ paginate = 15
   description = "Your site description"
   search      = true          # set false to disable Pagefind mount
 
+# RSS: generate a single site-wide feed at /rss.xml.
+# Without this, Hugo also emits feeds for every tag and category page.
+[outputs]
+  home     = ['html', 'rss']
+  section  = ['html']
+  taxonomy = ['html']
+  term     = ['html']
+
+[outputFormats]
+  [outputFormats.RSS]
+    baseName = "rss"          # publish to /rss.xml instead of /index.xml
+
 # Main navigation — drives the Categories tab in the sidebar.
 # URLs use the singular /category/ form to match the [taxonomies] block.
 [menu]
