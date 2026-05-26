@@ -201,3 +201,56 @@ func TestFigureGalleryItemHasCaption(t *testing.T) {
 	doc := helpers.ParseFile(t, galleryPostPath)
 	helpers.AssertSelector(t, doc, ".gallery figure.gallery-item figcaption", 4)
 }
+
+// ── maxheight param ───────────────────────────────────────────────────────────
+
+const maxheightPostPath = "posts/figure-maxheight-fixture/index.html"
+
+// TestFigureMaxHeightStyleAttr verifies that a figure rendered with
+// maxheight="400" emits style="max-height: 400px; width: auto;" on the <img>.
+func TestFigureMaxHeightStyleAttr(t *testing.T) {
+	buildOnce(t)
+	doc := helpers.ParseFile(t, maxheightPostPath)
+
+	img := doc.Find(".entry-content figure img").First()
+	if img.Length() == 0 {
+		t.Fatal("no <img> found inside figure")
+	}
+	helpers.AssertAttr(t, doc, ".entry-content figure img", "style", "max-height: 400px")
+	helpers.AssertAttr(t, doc, ".entry-content figure img", "style", "width: auto")
+}
+
+// TestFigureMaxHeightPreservesDimensions verifies that width and height
+// attributes are still present alongside the max-height style (so the browser
+// can still reserve layout space before the image loads, preventing CLS).
+func TestFigureMaxHeightPreservesDimensions(t *testing.T) {
+	buildOnce(t)
+	doc := helpers.ParseFile(t, maxheightPostPath)
+
+	img := doc.Find(".entry-content figure img").First()
+	if img.Length() == 0 {
+		t.Fatal("no <img> found inside figure")
+	}
+	if w, _ := img.Attr("width"); w == "" {
+		t.Error("figure <img> with maxheight is missing the width attribute (needed for CLS prevention)")
+	}
+	if h, _ := img.Attr("height"); h == "" {
+		t.Error("figure <img> with maxheight is missing the height attribute (needed for CLS prevention)")
+	}
+}
+
+// TestFigureWithoutMaxHeightHasNoStyle verifies that a figure rendered
+// without maxheight does NOT emit a style attribute on its <img>, so the
+// feature is strictly opt-in.
+func TestFigureWithoutMaxHeightHasNoStyle(t *testing.T) {
+	buildOnce(t)
+	doc := helpers.ParseFile(t, carbonRiverPath)
+
+	img := doc.Find(".entry-content figure img").First()
+	if img.Length() == 0 {
+		t.Fatal("no <img> found inside figure")
+	}
+	if style, exists := img.Attr("style"); exists && style != "" {
+		t.Errorf("figure <img> without maxheight should have no style attribute, got %q", style)
+	}
+}
