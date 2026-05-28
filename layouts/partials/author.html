@@ -1,0 +1,28 @@
+{{- /*
+    partials/author.html — Resolve and normalize a page's author.
+
+    Reads .Params.author (string or map) from the passed page context.
+    Accepted shapes:
+        author: "Jane Doe"
+        author:
+          name:  "Jane Doe"
+          url:   "https://janedoe.com"   # optional
+          email: "jane@example.com"      # optional
+
+    Returns a dict { name, url, email }. Keys are present only when set.
+    Empty dict when no author is configured on the page — callers gate on
+    `with $a.name` so older posts and main-author posts render unchanged.
+*/ -}}
+
+{{- $page := . -}}
+{{- $result := dict -}}
+{{- with $page.Params.author -}}
+    {{- if reflect.IsMap . -}}
+        {{- with .name  -}}{{- $result = merge $result (dict "name"  .) -}}{{- end -}}
+        {{- with .url   -}}{{- $result = merge $result (dict "url"   .) -}}{{- end -}}
+        {{- with .email -}}{{- $result = merge $result (dict "email" .) -}}{{- end -}}
+    {{- else -}}
+        {{- $result = dict "name" . -}}
+    {{- end -}}
+{{- end -}}
+{{- return $result -}}

@@ -1183,6 +1183,15 @@ body.open-sidebar .gh-main::after {
     font-size: 0;
 }
 
+.byline {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 0 0 12px;
+}
+
+.byline a { color: var(--text-muted); text-decoration: underline; }
+.byline a:hover { color: var(--text-primary); }
+
 .posted-on { font-size: 14px; color: var(--text-muted); }
 
 .cat-links {

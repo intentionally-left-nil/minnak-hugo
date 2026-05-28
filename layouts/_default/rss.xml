@@ -54,11 +54,28 @@
 			{{ printf "<atom:link href=%q rel=\"self\" type=%q />" .Permalink .MediaType | safeHTML }}
 		{{- end }}
 		{{- range $pages }}
+			{{- /* Per-item author. RSS spec requires <author> to be an email
+			       address. Resolution:
+			           1. Page front matter has author with email -> use it
+			           2. Page front matter has author without email -> omit
+			              the <author> element rather than misattributing the
+			              guest post to the site owner.
+			           3. Page has no author -> fall back to site author
+			              (which itself is only emitted when the site has an
+			              email configured). */ -}}
+			{{- $itemAuthor := partial "author.html" . -}}
+			{{- $itemEmail := $authorEmail -}}
+			{{- $itemName := $authorName -}}
+			{{- with $itemAuthor.name -}}
+				{{- $itemName = . -}}
+				{{- $itemEmail = "" -}}
+				{{- with $itemAuthor.email -}}{{- $itemEmail = . -}}{{- end -}}
+			{{- end }}
 			<item>
 				<title>{{ .Title }}</title>
 				<link>{{ .Permalink }}</link>
 				<pubDate>{{ .PublishDate.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
-				{{- with $authorEmail }}<author>{{ . }}{{ with $authorName }} ({{ . }}){{ end }}</author>{{ end }}
+				{{- with $itemEmail }}<author>{{ . }}{{ with $itemName }} ({{ . }}){{ end }}</author>{{ end }}
 				<guid>{{ .Permalink }}</guid>
 				<description>{{ .Content | transform.XMLEscape | safeHTML }}</description>
 			</item>

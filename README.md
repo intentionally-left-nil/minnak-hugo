@@ -105,6 +105,40 @@ summary: "Short excerpt shown on cards."
 > `hugo.toml`) are singular — using plural `categories:` / `tags:` will
 > result in empty taxonomy widgets and broken links.
 
+### Guest author (optional)
+
+Posts can declare a guest author via an optional `author:` key. When
+set, the post header renders a `Guest author: NAME` byline and `<head>`
+emits SEO metadata: `<meta name="author">`, `<meta property="article:author">`,
+and a [schema.org `Article`](https://schema.org/Article) JSON-LD block.
+Posts without `author:` render unchanged — older posts and main-author
+posts are unaffected.
+
+Two shapes are accepted. Plain string:
+
+```yaml
+---
+title: "Guest Post"
+author: "Jane Doe"
+---
+```
+
+Map (use when the author has a homepage):
+
+```yaml
+---
+title: "Guest Post"
+author:
+  name: "Jane Doe"
+  url:  "https://janedoe.com"   # optional; wraps the byline name in <a>
+  email: "jane@example.com"     # optional; used by RSS <author>
+---
+```
+
+Without `email`, the RSS `<author>` element is omitted for that item
+(RSS spec requires an email; falling back to the site owner would
+misattribute the post).
+
 Standalone pages (About, etc.) go anywhere else in `content/` with `type: page`:
 
 ```yaml

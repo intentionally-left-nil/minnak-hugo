@@ -7,6 +7,24 @@
             <div class="article-content">
                 <header class="entry-header">
                     <h1 class="entry-title" data-pagefind-meta="title">{{ .Title }}</h1>
+                    {{- /* Guest-author byline. Renders only when the page's
+                           front matter sets `author:` (string or map). The
+                           helper normalizes both shapes; older posts and
+                           main-author posts are unaffected. The pagefind
+                           meta attribute is on the inner element so the
+                           indexed value is just the name, not the literal
+                           "Guest author:" label. */ -}}
+                    {{- $author := partial "author.html" . -}}
+                    {{- with $author.name }}
+                    <p class="byline">
+                        Guest author:
+                        {{- with $author.url }}
+                        <a href="{{ . }}" rel="author" data-pagefind-meta="author">{{ $author.name }}</a>
+                        {{- else }}
+                        <span data-pagefind-meta="author">{{ $author.name }}</span>
+                        {{- end }}
+                    </p>
+                    {{- end }}
                     <div class="entry-meta">
                         <span class="posted-on">
                             <time datetime="{{ .Date.Format "2006-01-02" }}" data-pagefind-meta="date[datetime]">
