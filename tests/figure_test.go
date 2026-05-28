@@ -216,8 +216,8 @@ func TestFigureMaxHeightStyleAttr(t *testing.T) {
 	if img.Length() == 0 {
 		t.Fatal("no <img> found inside figure")
 	}
-	helpers.AssertAttr(t, doc, ".entry-content figure img", "style", "max-height: 400px")
-	helpers.AssertAttr(t, doc, ".entry-content figure img", "style", "width: auto")
+	helpers.AssertStyleProp(t, doc, ".entry-content figure img", "max-height", "400px")
+	helpers.AssertStyleProp(t, doc, ".entry-content figure img", "width", "auto")
 }
 
 // TestFigureMaxHeightPreservesDimensions verifies that width and height

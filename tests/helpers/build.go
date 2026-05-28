@@ -141,6 +141,27 @@ func AssertAttr(t *testing.T, doc *goquery.Document, selector, attr, substr stri
 	}
 }
 
+// AssertStyleProp asserts that the first element matching selector has a CSS
+// style attribute containing the given property set to the given value.
+// It is whitespace-insensitive: both "max-height: 400px" and "max-height:400px"
+// are accepted for property "max-height", value "400px".  This makes the check
+// robust against Hugo's --minify flag, which strips whitespace from inline CSS.
+func AssertStyleProp(t *testing.T, doc *goquery.Document, selector, prop, wantVal string) {
+	t.Helper()
+	style, exists := doc.Find(selector).First().Attr("style")
+	if !exists {
+		t.Errorf("selector %q: attribute \"style\" not found", selector)
+		return
+	}
+	// Normalise: remove all spaces around ':' and ';' so we can check a single
+	// canonical form regardless of whether the output was minified.
+	normalised := strings.ReplaceAll(style, " ", "")
+	needle := prop + ":" + wantVal
+	if !strings.Contains(normalised, needle) {
+		t.Errorf("selector %q style=%q: want CSS property %q=%q", selector, style, prop, wantVal)
+	}
+}
+
 // FileExists asserts that a file exists at the given public/-relative path.
 func FileExists(t *testing.T, path string) {
 	t.Helper()
