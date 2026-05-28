@@ -3,6 +3,7 @@ title: "What GPT-4 Gets Wrong About Cantonese"
 date: 2026-03-01T14:00:00Z
 category: ["AI"]
 tag: ["llm", "language", "evaluation"]
+author: dr-wing-lam
 summary: "Large language models perform surprisingly well on Mandarin but struggle with Cantonese in ways that reveal the limits of training data distribution."
 cover:
   src: "feature.jpg"

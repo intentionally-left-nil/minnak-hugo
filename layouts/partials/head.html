@@ -24,6 +24,36 @@
 {{- /* Canonical */}}
 <link rel="canonical" href="{{ .Permalink }}" />
 
+{{- /* Author SEO. Only renders on regular leaf pages (not the home, list,
+       term, or taxonomy kinds, and not standalone `type: page` content)
+       whose front matter declares an author. Restricting by .IsPage and
+       .Type avoids attaching schema.org Article markup to non-articles
+       like a category _index.md that happened to set an author. */ -}}
+{{- $author := partial "author.html" . -}}
+{{- if and $author.name .IsPage (ne .Type "page") }}
+<meta name="author" content="{{ $author.name }}" />
+<meta property="article:author" content="{{ $author.name }}" />
+    {{- /* Build JSON-LD as a Go map and pipe through jsonify once. The
+           output of jsonify is already valid JSON with HTML-escaped
+           characters; safeJS just stops the html/template engine from
+           re-escaping it inside the surrounding <script>.
+           Headline is truncated to 110 characters because Google ignores
+           Article structured data with longer headlines. strings.Truncate
+           is rune-aware and cuts on word boundaries. */ -}}
+    {{- $person := dict "@type" "Person" "name" $author.name -}}
+    {{- with $author.url }}{{- $person = merge $person (dict "url" .) -}}{{- end -}}
+    {{- $ld := dict
+        "@context" "https://schema.org"
+        "@type"    "Article"
+        "headline" (strings.Truncate 110 "" $.Title)
+        "mainEntityOfPage" (dict "@type" "WebPage" "@id" $.Permalink)
+        "author"   $person -}}
+    {{- if not $.Date.IsZero -}}
+        {{- $ld = merge $ld (dict "datePublished" ($.Date.Format "2006-01-02")) -}}
+    {{- end }}
+<script type="application/ld+json">{{ $ld | jsonify (dict "indent" "  ") | safeJS }}</script>
+{{- end }}
+
 {{- /* RSS */}}
 {{ range .AlternativeOutputFormats -}}
 <link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink }}" title="{{ $.Site.Title }}" />

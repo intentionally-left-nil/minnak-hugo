@@ -105,6 +105,49 @@ summary: "Short excerpt shown on cards."
 > `hugo.toml`) are singular — using plural `categories:` / `tags:` will
 > result in empty taxonomy widgets and broken links.
 
+### Guest author (optional)
+
+Posts can declare a guest author via an optional `author:` key. When
+set, the post header renders a `Guest author: NAME` byline and `<head>`
+emits SEO metadata: `<meta name="author">`, `<meta property="article:author">`,
+and a [schema.org `Article`](https://schema.org/Article) JSON-LD block.
+Posts without `author:` render unchanged.
+
+**1. Create an author profile** at `content/authors/<slug>/_index.md`:
+
+```yaml
+---
+name:    "Jane Doe"
+website: "https://janedoe.com"   # optional; wraps the byline name in <a>
+email:   "jane@example.com"      # optional; used by RSS <author>
+---
+```
+
+> **Note:** use `website`, not `url` — `url` is a reserved Hugo frontmatter
+> key that controls the page's own URL.
+
+**2. Reference the slug in the post's frontmatter:**
+
+```yaml
+---
+title: "Guest Post"
+author: jane-doe
+---
+```
+
+The theme looks up `content/authors/jane-doe/_index.md` and reads
+`name`, `website`, and `email` from it. If the slug is not found the
+`author:` key is silently ignored and no byline is rendered.
+
+Hugo also builds a page at `/authors/jane-doe/` for each author profile.
+These pages are not linked from anywhere by default — add them to your
+menus if you want author archive pages.
+
+For RSS, the `<author>` element is only emitted when the author profile
+has an `email` field (the RSS 2.0 spec requires an email address there).
+Without `email` the element is omitted rather than misattributing the
+post to the site owner.
+
 Standalone pages (About, etc.) go anywhere else in `content/` with `type: page`:
 
 ```yaml
