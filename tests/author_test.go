@@ -14,44 +14,48 @@ import (
 // ----------------------------------------------------------------------------
 // Guest author
 //
-// Posts may declare an optional `author` in front matter, as either a plain
-// string (`author: "Jane Doe"`) or a map (`{name, url, email}`). When set, a
-// "Guest author: NAME" byline appears under the post title and SEO meta
-// (meta[name=author], og article:author, JSON-LD Article) is emitted in
-// <head>. Posts without `author` render unchanged.
+// Posts declare an optional `author` in front matter as a slug string that
+// corresponds to a content file at content/authors/<slug>/_index.md. When
+// set and the slug resolves, a "Guest author: NAME" byline appears under the
+// post title and SEO meta (meta[name=author], og article:author, JSON-LD
+// Article) is emitted in <head>. Posts without `author`, or with an unknown
+// slug, render unchanged.
 //
 // Fixtures (exampleSite/content/posts/):
-//   jyutping-heritage-speaker.md  - string form: "Maya Chen"
-//   gpt4-cantonese/               - map form:    "Dr. Wing Lam" + url
+//   jyutping-heritage-speaker.md  - author: maya-chen (name only, no url)
+//   gpt4-cantonese/               - author: dr-wing-lam (name + url)
 //   rust-ownership-model/         - no author (baseline)
+//
+// Author profiles (exampleSite/content/authors/):
+//   maya-chen/    - name, email (no website)
+//   dr-wing-lam/  - name, website, email
 // ----------------------------------------------------------------------------
 
 const (
-	authorStringPostPath = "posts/jyutping-heritage-speaker/index.html"
-	authorMapPostPath    = "posts/gpt4-cantonese/index.html"
-	authorAbsentPostPath = "posts/rust-ownership-model/index.html"
+	authorNoURLPostPath  = "posts/jyutping-heritage-speaker/index.html"
+	authorWithURLPostPath = "posts/gpt4-cantonese/index.html"
+	authorAbsentPostPath  = "posts/rust-ownership-model/index.html"
 )
 
-// TestBylineStringAuthor verifies a string-form author renders as plain text.
-func TestBylineStringAuthor(t *testing.T) {
+// TestBylineAuthorWithoutURL verifies an author with no url renders as plain
+// text (no anchor element).
+func TestBylineAuthorWithoutURL(t *testing.T) {
 	buildOnce(t)
-	doc := helpers.ParseFile(t, authorStringPostPath)
+	doc := helpers.ParseFile(t, authorNoURLPostPath)
 
 	helpers.AssertSelector(t, doc, ".entry-header .byline", 1)
 	helpers.AssertText(t, doc, ".byline", "Guest author")
 	helpers.AssertText(t, doc, ".byline", "Maya Chen")
 
-	// String form has no url, so byline text contains the name without an <a>.
 	if doc.Find(".byline a").Length() != 0 {
-		t.Errorf("string-form author byline should not contain an <a>")
+		t.Errorf("author without url should not render an <a> in byline")
 	}
 }
 
-// TestBylineMapAuthorLinked verifies a map-form author with `url` renders as
-// a link wrapping the name.
-func TestBylineMapAuthorLinked(t *testing.T) {
+// TestBylineAuthorWithURL verifies an author with a url renders as a link.
+func TestBylineAuthorWithURL(t *testing.T) {
 	buildOnce(t)
-	doc := helpers.ParseFile(t, authorMapPostPath)
+	doc := helpers.ParseFile(t, authorWithURLPostPath)
 
 	helpers.AssertSelector(t, doc, ".entry-header .byline", 1)
 	helpers.AssertText(t, doc, ".byline", "Guest author")
@@ -88,15 +92,10 @@ func TestArticleJSONLDOnlyOnPosts(t *testing.T) {
 	}
 }
 
-// TestRSSGuestAuthorOmitsAuthorTag verifies guest-author posts whose front
-// matter has no email do not get an RSS <author> element. RSS spec requires
-// <author> to be an email; misattributing the post to the site owner's
-// email would be incorrect, so the element is omitted entirely.
-//
-// Conversely, when a guest author supplies an email, the <author> element
-// is emitted with that email and the author's name in parens, matching the
-// RSS 2.0 format `email (Name)`.
-func TestRSSGuestAuthorOmitsAuthorTag(t *testing.T) {
+// TestRSSAuthorElement verifies per-item RSS <author> elements. The RSS 2.0
+// spec requires <author> to be an email address; the element is only emitted
+// when the author content file has an email field.
+func TestRSSAuthorElement(t *testing.T) {
 	buildOnce(t)
 
 	type rssItem struct {
@@ -120,9 +119,9 @@ func TestRSSGuestAuthorOmitsAuthorTag(t *testing.T) {
 	}
 
 	// Expected per-item <author> values keyed by post title.
-	// Empty string means "<author> element should be absent".
+	// Both authors have email addresses, so both should emit <author>.
 	want := map[string]string{
-		"Learning Jyutping as an Adult Heritage Speaker": "",
+		"Learning Jyutping as an Adult Heritage Speaker": "maya@example.com (Maya Chen)",
 		"What GPT-4 Gets Wrong About Cantonese":          "winglam@example.com (Dr. Wing Lam)",
 	}
 	seen := 0
@@ -142,8 +141,7 @@ func TestRSSGuestAuthorOmitsAuthorTag(t *testing.T) {
 }
 
 // TestSEOMetaAuthorPresent verifies meta[name=author] and og article:author
-// are emitted on posts with an author. Both string and map author forms are
-// covered to confirm both paths through partials/author.html.
+// are emitted on posts with an author.
 func TestSEOMetaAuthorPresent(t *testing.T) {
 	buildOnce(t)
 
@@ -151,8 +149,8 @@ func TestSEOMetaAuthorPresent(t *testing.T) {
 		path string
 		name string
 	}{
-		{authorStringPostPath, "Maya Chen"},
-		{authorMapPostPath, "Dr. Wing Lam"},
+		{authorNoURLPostPath, "Maya Chen"},
+		{authorWithURLPostPath, "Dr. Wing Lam"},
 	}
 	for _, tc := range cases {
 		doc := helpers.ParseFile(t, tc.path)
@@ -162,10 +160,10 @@ func TestSEOMetaAuthorPresent(t *testing.T) {
 }
 
 // TestJSONLDArticlePresent verifies the JSON-LD Article block on a post with
-// a string author has the expected schema.org Person author.
+// an author that has no url — the url field should be absent from the output.
 func TestJSONLDArticlePresent(t *testing.T) {
 	buildOnce(t)
-	doc := helpers.ParseFile(t, authorStringPostPath)
+	doc := helpers.ParseFile(t, authorNoURLPostPath)
 
 	scripts := doc.Find(`script[type="application/ld+json"]`)
 	if scripts.Length() != 1 {
@@ -192,17 +190,16 @@ func TestJSONLDArticlePresent(t *testing.T) {
 	if got := author["name"]; got != "Maya Chen" {
 		t.Errorf("author.name: got %v, want %q", got, "Maya Chen")
 	}
-	// String-form author has no url; absence is the expected behaviour.
 	if _, hasURL := author["url"]; hasURL {
-		t.Errorf("author.url: should be omitted for string-form author")
+		t.Errorf("author.url: should be omitted when not set in author content file")
 	}
 }
 
-// TestJSONLDArticleAuthorURL verifies map-form authors include a url in the
+// TestJSONLDArticleAuthorURL verifies authors with a url include it in the
 // JSON-LD author object.
 func TestJSONLDArticleAuthorURL(t *testing.T) {
 	buildOnce(t)
-	doc := helpers.ParseFile(t, authorMapPostPath)
+	doc := helpers.ParseFile(t, authorWithURLPostPath)
 
 	scripts := doc.Find(`script[type="application/ld+json"]`)
 	if scripts.Length() != 1 {

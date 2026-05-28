@@ -1,23 +1,3 @@
-{{- $authorEmail := "" }}
-{{- with site.Params.author }}
-	{{- if reflect.IsMap . }}
-		{{- with .email }}
-			{{- $authorEmail = . }}
-		{{- end }}
-	{{- end }}
-{{- end }}
-
-{{- $authorName := "" }}
-{{- with site.Params.author }}
-	{{- if reflect.IsMap . }}
-		{{- with .name }}
-			{{- $authorName = . }}
-		{{- end }}
-	{{- else }}
-		{{- $authorName = . }}
-	{{- end }}
-{{- end }}
-
 {{- $pctx := . }}
 {{- if .IsHome }}{{ $pctx = .Site }}{{ end }}
 {{- $pages := slice }}
@@ -38,12 +18,6 @@
 		<description>Recent content {{ if ne .Title .Site.Title }}{{ with .Title }}in {{ . }} {{ end }}{{ end }}on {{ .Site.Title }}</description>
 		<generator>Hugo</generator>
 		<language>{{ site.Language.Locale }}</language>
-		{{ with $authorEmail }}
-			<managingEditor>{{ . }}{{ with $authorName }} ({{ . }}){{ end }}</managingEditor>
-		{{ end }}
-		{{ with $authorEmail }}
-			<webMaster>{{ . }}{{ with $authorName }} ({{ . }}){{ end }}</webMaster>
-		{{ end }}
 		{{ with .Site.Copyright }}
 			<copyright>{{ . }}</copyright>
 		{{ end }}
@@ -54,28 +28,15 @@
 			{{ printf "<atom:link href=%q rel=\"self\" type=%q />" .Permalink .MediaType | safeHTML }}
 		{{- end }}
 		{{- range $pages }}
-			{{- /* Per-item author. RSS spec requires <author> to be an email
-			       address. Resolution:
-			           1. Page front matter has author with email -> use it
-			           2. Page front matter has author without email -> omit
-			              the <author> element rather than misattributing the
-			              guest post to the site owner.
-			           3. Page has no author -> fall back to site author
-			              (which itself is only emitted when the site has an
-			              email configured). */ -}}
-			{{- $itemAuthor := partial "author.html" . -}}
-			{{- $itemEmail := $authorEmail -}}
-			{{- $itemName := $authorName -}}
-			{{- with $itemAuthor.name -}}
-				{{- $itemName = . -}}
-				{{- $itemEmail = "" -}}
-				{{- with $itemAuthor.email -}}{{- $itemEmail = . -}}{{- end -}}
-			{{- end }}
+			{{- /* Per-item author. RSS <author> must be an email address per the
+			       RSS 2.0 spec. Emit it only when the author content file has an
+			       email field; omit the element entirely otherwise. */ -}}
+			{{- $author := partial "author.html" . -}}
 			<item>
 				<title>{{ .Title }}</title>
 				<link>{{ .Permalink }}</link>
 				<pubDate>{{ .PublishDate.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
-				{{- with $itemEmail }}<author>{{ . }}{{ with $itemName }} ({{ . }}){{ end }}</author>{{ end }}
+				{{- with $author.email }}<author>{{ . }}{{ with $author.name }} ({{ . }}){{ end }}</author>{{ end }}
 				<guid>{{ .Permalink }}</guid>
 				<description>{{ .Content | transform.XMLEscape | safeHTML }}</description>
 			</item>
