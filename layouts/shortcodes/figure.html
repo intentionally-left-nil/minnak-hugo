@@ -5,13 +5,15 @@
     lazy loading, and gallery-awareness via .Parent.
 
     Params:
-        src      — page-bundle resource path or external URL (required
-                   unless cover=true)
-        alt      — alt text for screen readers (recommended)
-        caption  — display caption rendered below the image (optional)
-        cover    — set to true to read src/alt/caption from the page's
-                   cover: front matter. Explicitly passed src/alt/caption
-                   params take precedence over front-matter values.
+        src       — page-bundle resource path or external URL (required
+                    unless cover=true)
+        alt       — alt text for screen readers (recommended)
+        caption   — display caption rendered below the image (optional)
+        cover     — set to true to read src/alt/caption from the page's
+                    cover: front matter. Explicitly passed src/alt/caption
+                    params take precedence over front-matter values.
+        maxheight — maximum rendered height in pixels (standalone mode only);
+                    width is determined automatically by the aspect ratio.
 
     When called inside a {{< gallery >}} shortcode, renders a
     <figure class="gallery-item"> with a 400×400 square-cropped thumbnail
@@ -21,9 +23,10 @@
     WebP + JPEG srcset at six widths (480, 720, 960, 1200, 1600, 2000px),
     lazy-loaded with explicit dimensions to prevent layout shift (CLS).
 */ -}}
-{{- $src     := .Get "src" -}}
-{{- $alt     := .Get "alt" -}}
-{{- $caption := .Get "caption" -}}
+{{- $src       := .Get "src" -}}
+{{- $alt       := .Get "alt" -}}
+{{- $caption   := .Get "caption" -}}
+{{- $maxheight := .Get "maxheight" -}}
 
 {{- /* cover=true: pull src/alt/caption from page front matter */}}
 {{- if .Get "cover" -}}
@@ -81,6 +84,7 @@
                         loading="lazy"
                         width="{{ $fallback.Width }}"
                         height="{{ $fallback.Height }}"
+                        {{- with $maxheight }} style="max-height: {{ . }}px; width: auto;"{{ end }}
                     />
                 </picture>
                 {{- with $caption -}}
@@ -94,7 +98,7 @@
             {{- warnf "The %q shortcode could not find %q as a page resource: see %s" $.Name $src $.Position -}}
         {{- end -}}
         <figure{{ if $.Parent }} class="gallery-item"{{ end }}>
-            <img src="{{ $src }}" alt="{{ $alt }}" loading="lazy" />
+            <img src="{{ $src }}" alt="{{ $alt }}" loading="lazy"{{ with $maxheight }} style="max-height: {{ . }}px; width: auto;"{{ end }} />
             {{- with $caption -}}
             <figcaption>{{ . }}</figcaption>
             {{- end -}}

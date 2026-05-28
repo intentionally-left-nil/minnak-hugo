@@ -37,7 +37,7 @@ lint: ## Hugo path-warnings lint pass
 test: ## Run Go markup tests (reuses existing public/ if present)
 	cd tests && MINNAK_SKIP_BUILD=1 go test ./... -count=1 -v
 
-test-fresh: ## Run Go tests after a fresh build
+test-fresh: clean ## Run Go tests after a fresh build
 	cd tests && go test ./... -count=1 -v
 
 e2e: ## Run Playwright E2E tests
