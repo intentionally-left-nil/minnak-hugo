@@ -45,6 +45,27 @@
     --text-muted:     #969C9F;
     --border-idle:    #787D80;
 
+    /* Code (inline + blocks) */
+    --code-text:      #e06c75;
+    --code-bg:        #2c2f33;
+    --code-border:    #444;
+
+    /* Tag pills */
+    --tag-bg:         #676D70;
+    --tag-bg-hover:   #787D80;
+    --tag-text:       #E1E7EA;
+    --tag-text-hover: #fff;
+
+    /* Misc accents */
+    --selection-bg:           #cbeafb;
+    --mark-bg:                #fdffb6;
+    --search-submit-bg:       #424648;
+    --search-submit-bg-hover: #555B5E;
+    --badge-text:             #383838;
+    --badge-bg:               #fff;
+    --overlay:                rgba(25, 25, 25, 0.9);
+    --on-primary:             #fff;
+
     /* Sidebar layout */
     --sidebar-header-h: 185px;
     --sidebar-footer-h: 0px;
@@ -207,11 +228,11 @@ hr {
 
 ::selection {
     text-shadow: none;
-    background: #cbeafb;
+    background: var(--selection-bg);
 }
 
 mark {
-    background-color: #fdffb6;
+    background-color: var(--mark-bg);
 }
 
 small {
@@ -352,7 +373,7 @@ h6 { font-size: 2.2rem; }
 }
 
 .gh-button.gh-button-primary {
-    color: #fff !important;
+    color: var(--on-primary) !important;
     background-color: var(--color-primary);
     box-shadow: none;
 }
@@ -589,7 +610,7 @@ h6 { font-size: 2.2rem; }
     width: 36px;
     height: 36px;
     padding: 0;
-    background: #424648;
+    background: var(--search-submit-bg);
     border: 0;
     border-radius: 0 3px 3px 0;
     color: var(--text-primary);
@@ -600,7 +621,7 @@ h6 { font-size: 2.2rem; }
     transition: background .2s;
 }
 
-.left-sidebar .widget-tab .search-submit:hover { background: #555B5E; }
+.left-sidebar .widget-tab .search-submit:hover { background: var(--search-submit-bg-hover); }
 .left-sidebar .widget-tab .search-submit svg { width: 20px; height: 20px; }
 
 /* Recent Posts widget */
@@ -799,19 +820,19 @@ h6 { font-size: 2.2rem; }
 .gh-canvas :not(pre) code {
     vertical-align: middle;
     padding: 0.15em 0.4em;
-    border: #444 1px solid;
+    border: var(--code-border) 1px solid;
     font-weight: 400 !important;
     font-size: 0.9em;
     line-height: 1em;
-    color: #e06c75;
-    background: #2c2f33;
+    color: var(--code-text);
+    background: var(--code-bg);
     border-radius: 0.25em;
 }
 
 .gh-canvas > pre {
     overflow: scroll;
     padding: 16px 20px;
-    background: #2c2f33;
+    background: var(--code-bg);
     border-radius: 5px;
     box-shadow: 0 2px 6px -2px rgba(0,0,0,.3), 0 0 1px rgba(0,0,0,.6);
 }
@@ -924,8 +945,8 @@ a.gh-powered:hover {
     letter-spacing: -0.3px;
     font-weight: 600;
     text-decoration: none;
-    color: #383838;
-    background: #fff;
+    color: var(--badge-text);
+    background: var(--badge-bg);
     border-radius: 5px;
     box-shadow: 0 0 0 1px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.08);
     cursor: pointer;
@@ -1017,7 +1038,7 @@ html,
 }
 
 body.open-sidebar .gh-main::after {
-    background-color: rgba(25, 25, 25, 0.9);
+    background-color: var(--overlay);
     pointer-events: auto;
 }
 
@@ -1107,7 +1128,7 @@ body.open-sidebar .gh-main::after {
 }
 
 .gh-card-tag { text-align: right; text-decoration: none; }
-.gh-card-tag:hover { color: #676D70; }
+.gh-card-tag:hover { color: var(--tag-bg); }
 
 .gh-card-content {
     font-family: LatoLatin, Arial, sans-serif;
@@ -1239,11 +1260,11 @@ body.open-sidebar .gh-main::after {
 .entry-content :not(pre) code {
     vertical-align: middle;
     padding: 0.15em 0.4em;
-    border: #444 1px solid;
+    border: var(--code-border) 1px solid;
     font-size: 0.88em;
     line-height: 1em;
-    color: #e06c75;
-    background: #2c2f33;
+    color: var(--code-text);
+    background: var(--code-bg);
     border-radius: 0.25em;
     font-weight: 400;
 }
@@ -1286,8 +1307,8 @@ body.open-sidebar .gh-main::after {
 .tags-links a {
     display: inline-block;
     font-size: 14px;
-    background: #676D70;
-    color: #E1E7EA;
+    background: var(--tag-bg);
+    color: var(--tag-text);
     line-height: 1;
     padding: 4px 10px;
     margin-right: 3px;
@@ -1297,7 +1318,7 @@ body.open-sidebar .gh-main::after {
     transition: background 0.2s;
 }
 
-.tags-links a:hover { background: #787D80; color: #fff; }
+.tags-links a:hover { background: var(--tag-bg-hover); color: var(--tag-text-hover); }
 
 /* Author archive */
 .gh-author-image {
@@ -1357,10 +1378,10 @@ body.open-sidebar .gh-main::after {
 .gh-content :not(pre) code {
     vertical-align: middle;
     padding: 0.15em 0.4em;
-    border: #444 1px solid;
+    border: var(--code-border) 1px solid;
     font-size: 0.88em;
-    color: #e06c75;
-    background: #2c2f33;
+    color: var(--code-text);
+    background: var(--code-bg);
     border-radius: 0.25em;
 }
 
