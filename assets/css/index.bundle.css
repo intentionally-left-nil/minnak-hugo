@@ -817,7 +817,7 @@ h6 { font-size: 2.2rem; }
     .gh-content blockquote::before { left: -4vmin; }
 }
 
-.gh-canvas :not(pre) code {
+.gh-canvas :not(pre) > code {
     vertical-align: middle;
     padding: 0.15em 0.4em;
     border: var(--code-border) 1px solid;
@@ -1257,7 +1257,7 @@ body.open-sidebar .gh-main::after {
 }
 
 /* Inline code inside post body */
-.entry-content :not(pre) code {
+.entry-content :not(pre) > code {
     vertical-align: middle;
     padding: 0.15em 0.4em;
     border: var(--code-border) 1px solid;
@@ -1375,7 +1375,7 @@ body.open-sidebar .gh-main::after {
 
 .gh-content a { color: var(--color-primary); }
 
-.gh-content :not(pre) code {
+.gh-content :not(pre) > code {
     vertical-align: middle;
     padding: 0.15em 0.4em;
     border: var(--code-border) 1px solid;
